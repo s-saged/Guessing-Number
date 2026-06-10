@@ -16,100 +16,97 @@ let playGame = true;
 
 const maxGuesses = 10;
 
-if (playGame) {
-    submit.addEventListener("click", function (e) {
-        e.preventDefault();
+// Event
+submit.addEventListener("click", function (e) {
+    e.preventDefault();
+    if (!playGame) return;
 
-        const guess = Number(userInput.value);
-        validateGuess(guess);
-    });
-}
+    const guess = Number(userInput.value);
+    validateGuess(guess);
+});
 
+// Validate input
 function validateGuess(guess) {
     if (isNaN(guess)) {
-        alert("Please enter a valid number.");
+        alert("ادخل رقم صحيح");
+        return;
     }
-    else if (guess < 1) {
-        alert("Please enter a number greater than 0.");
+    if (guess < 1 || guess > 100) {
+        alert("الرقم لازم يكون بين 1 و 100");
+        return;
     }
-    else if (guess > 100) {
-        alert("Please enter a number less than or equal to 100.");
-    }
-    else {
-        previousGuesses.push(guess);
 
-        displayGuesses(guess);
-        checkGuesses(guess);
-    }
-}
-
-function checkGuesses(guess) {
-    if (guess === randomNumber) {
-        displayMessage(
-            `Congratulations! You guessed the number in ${numGuesses} guesses!`
-        );
-        endgame();
-    }
-    else if (numGuesses >= maxGuesses) {
-        displayMessage(`Game Over! Number was ${randomNumber}`);
-        endgame();
-    }
-    else if (guess > randomNumber) {
-        displayMessage("Too high! Try again.");
-    }
-    else {
-        displayMessage("Too low! Try again.");
-    }
-}
-
-function displayGuesses(guess) {
-    userInput.value = "";
-
-    guessSlot.innerHTML += `${guess} `;
-
+    previousGuesses.push(guess);
     numGuesses++;
 
+    displayGuesses(guess);
+    checkGuess(guess);
+    checkGameOver();
+}
+
+// Check guess
+function checkGuess(guess) {
+    if (guess === randomNumber) {
+        displayMessage(`فزت! الرقم الصحيح هو ${randomNumber}`);
+        endGame();
+    } else if (guess > randomNumber) {
+        displayMessage("أعلى من الرقم المطلوب");
+    } else {
+        displayMessage("أقل من الرقم المطلوب");
+    }
+}
+
+// Update UI guesses
+function displayGuesses(guess) {
+    userInput.value = "";
+    guessSlot.innerHTML += `${guess} `;
     remaining.innerHTML = `${maxGuesses - numGuesses}`;
 }
 
-function displayMessage(message) {
-    lowOrHi.innerHTML = `<h1>${message}</h1>`;
+// Check game over
+function checkGameOver() {
+    if (numGuesses >= maxGuesses && previousGuesses[previousGuesses.length - 1] !== randomNumber) {
+        displayMessage(`خسرت! الرقم كان ${randomNumber}`);
+        endGame();
+    }
 }
 
-function endgame() {
-    userInput.value = "";
+// Show message
+function displayMessage(message) {
+    lowOrHi.innerHTML = `<h2>${message}</h2>`;
+}
+
+// End game
+function endGame() {
     userInput.setAttribute("disabled", "");
 
     p.classList.add("button");
-    p.innerHTML = `<h1 id="newgame">Start New Game</h1>`;
-
+    p.innerHTML = `<h2 id="newgame">ابدأ لعبة جديدة</h2>`;
     startOver.appendChild(p);
 
     playGame = false;
 
-    newgame();
+    newGame();
 }
 
-function newgame() {
+// Restart game
+function newGame() {
     const newGameButton = document.querySelector("#newgame");
 
     newGameButton.addEventListener("click", function () {
-
         randomNumber = Math.floor(Math.random() * 100) + 1;
 
         previousGuesses = [];
         numGuesses = 0;
+        playGame = true;
 
         guessSlot.innerHTML = "";
         lowOrHi.innerHTML = "";
-
         remaining.innerHTML = maxGuesses;
 
         userInput.removeAttribute("disabled");
         userInput.value = "";
 
         startOver.removeChild(p);
-
-        playGame = true;
     });
 }
