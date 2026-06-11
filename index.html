@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="shortcut icon" href="icon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cyber Guess Ultimate</title>
@@ -16,6 +20,8 @@
 <meta property="og:title" content="Cyber Guess Game">
 <meta property="og:description" content="لعبة تخمين أرقام بأسلوب سايبربنك ممتعة ومجانية">
 <meta property="og:type" content="website">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00fff2">
 <meta name="keywords" content="yber Guess, لعبة تخمين أرقام, لعبة ذكاء, ألعاب أونلاين بدون نت, لعبة موبايل خفيفة, لعبة تحدي, لعبة تركيز, لعبة سرعة بديهة, لعبة أرقام من 1 إلى 200, guess number game, number guessing game, brain game, logic game, casual game, addictive game, neon game, cyberpunk game, particle effects game, HTML5 game, browser game, JavaScript game, XP system game, score system game, high score game, single player game, arcade game, puzzle game, mobile friendly game, responsive game">
 <style>
 body{
@@ -375,6 +381,13 @@ document.getElementById("level").addEventListener("change", setLevel);
 document.getElementById("guess").addEventListener("keydown", e=>{
 if(e.key==="Enter") checkGuess();
 });
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js")
+    .then(() => console.log("SW Registered"))
+    .catch(err => console.log(err));
+}
+
 
 setLevel();
 updateUI();
