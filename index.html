@@ -3,147 +3,182 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guess Game Pro FX</title>
+<title>Cyber Guess RPG Ultimate</title>
 
 <style>
 body{
     margin:0;
     font-family: Arial;
-    background: radial-gradient(circle at top,#0f1530,#060810);
+    background:#05060a;
     color:white;
+    overflow:hidden;
     display:flex;
-    flex-direction:column;
-    align-items:center;
     justify-content:center;
+    align-items:center;
     min-height:100vh;
 }
 
-.gameBox{
-    width:360px;
-    padding:20px;
-    background: rgba(255,255,255,0.05);
-    border-radius:16px;
-    text-align:center;
-    position:relative;
-    box-shadow:0 0 30px rgba(0,0,0,0.7);
-    transition:0.3s;
+/* PARTICLES */
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:0;
 }
 
-h1{margin-bottom:10px}
+.container{
+    position:relative;
+    z-index:2;
+}
+
+/* CARD */
+.gameBox{
+    width:390px;
+    padding:20px;
+    border-radius:16px;
+    background:rgba(0,255,255,0.05);
+    border:1px solid rgba(0,255,255,0.2);
+    box-shadow:0 0 25px rgba(0,255,255,0.2);
+    text-align:center;
+    backdrop-filter: blur(10px);
+}
+
+h1{
+    color:#00fff2;
+    text-shadow:0 0 10px #00fff2;
+}
 
 select,input{
     width:100%;
     padding:10px;
-    margin:8px 0;
+    margin:6px 0;
+    background:#0b0f1a;
     border:none;
+    color:white;
     border-radius:8px;
 }
 
 button{
     width:100%;
     padding:10px;
-    background:#6c5ce7;
+    background:#00fff2;
     border:none;
-    color:white;
-    border-radius:8px;
+    font-weight:bold;
     cursor:pointer;
-    transition:0.2s;
+    box-shadow:0 0 15px #00fff2;
 }
-
-button:hover{background:#a29bfe}
 
 /* META */
 .meta{
     display:flex;
     justify-content:space-between;
-    font-size:14px;
+    font-size:13px;
     margin-top:10px;
+    color:#aefcff;
 }
 
 /* HISTORY */
 #history{
     margin-top:10px;
     text-align:left;
-    font-size:13px;
+    font-size:12px;
     max-height:120px;
     overflow:auto;
-    padding:10px;
-    background:rgba(255,255,255,0.05);
+    padding:8px;
+    background:rgba(0,255,255,0.05);
     border-radius:8px;
 }
 
-/* ===== ANIMATIONS ===== */
-
-.shake{
-    animation:shake 0.3s;
+/* XP BAR */
+.xpBar{
+    width:100%;
+    height:8px;
+    background:#111;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:10px;
 }
 
-@keyframes shake{
-    0%{transform:translateX(0)}
-    25%{transform:translateX(-8px)}
-    50%{transform:translateX(8px)}
-    100%{transform:translateX(0)}
+.xpFill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#00fff2,#00ff7b);
+    transition:0.3s;
 }
 
-/* WIN */
-.winFlash{
-    animation:winFlash 0.8s;
-}
-
-@keyframes winFlash{
-    0%{box-shadow:0 0 0px green}
-    50%{box-shadow:0 0 40px green}
-    100%{box-shadow:0 0 0px green}
-}
-
-/* LOSE */
-.loseShake{
-    animation:loseShake 0.5s;
-}
-
-@keyframes loseShake{
-    0%{transform:scale(1)}
-    25%{transform:scale(1.05)}
-    50%{transform:scale(0.95)}
-    100%{transform:scale(1)}
-}
-
+/* OVERLAY */
 .overlay{
     position:absolute;
     inset:0;
     display:none;
     justify-content:center;
     align-items:center;
-    font-size:26px;
+    font-size:28px;
     background:rgba(0,0,0,0.6);
     border-radius:16px;
 }
 
+/* ANIMATION */
+.shake{animation:shake 0.3s}
+@keyframes shake{
+    0%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    50%{transform:translateX(6px)}
+    100%{transform:translateX(0)}
+}
+
+.winGlow{animation:win 0.7s}
+@keyframes win{
+    0%{box-shadow:0 0 0 cyan}
+    50%{box-shadow:0 0 40px cyan}
+    100%{box-shadow:0 0 0 cyan}
+}
+
+.loseGlow{animation:lose 0.5s}
+@keyframes lose{
+    0%{transform:scale(1)}
+    50%{transform:scale(0.95)}
+    100%{transform:scale(1)}
+}
+
+/* ADS */
+#ad-container{
+    margin-top:15px;
+    text-align:center;
+}
 </style>
 </head>
 
 <body>
 
+<canvas id="bg"></canvas>
+
+<div class="container">
+
 <div class="gameBox" id="box">
 
-<h1>Guess Game</h1>
+<h1>CYBER GUESS</h1>
 
 <select id="level">
-    <option value="easy">Easy</option>
-    <option value="medium">Medium</option>
-    <option value="hard">Hard</option>
+    <option value="easy">EASY (1-50)</option>
+    <option value="medium">MEDIUM (1-100)</option>
+    <option value="hard">HARD (1-200)</option>
 </select>
 
-<input type="number" id="guess" placeholder="Enter number">
-
-<button onclick="checkGuess()">Submit</button>
+<input type="number" id="guess" placeholder="ENTER NUMBER">
+<button onclick="checkGuess()">HACK</button>
 
 <div class="meta">
-    <div>Attempts: <span id="left">10</span></div>
-    <div>Score: <span id="score">0</span></div>
+    <div>TRIES: <span id="left">10</span></div>
+    <div>SCORE: <span id="score">0</span></div>
 </div>
 
-<p id="msg"></p>
+<div class="meta">
+    <div>LEVEL: <span id="lvl">1</span></div>
+    <div>XP: <span id="xp">0</span></div>
+</div>
+
+<div class="xpBar"><div class="xpFill" id="xpFill"></div></div>
 
 <div id="history"></div>
 
@@ -151,127 +186,181 @@ button:hover{background:#a29bfe}
 
 </div>
 
+<!-- ADS -->
+<div id="ad-container">
+    <!-- ADS HERE -->
+<div id="ad-container">
+
+    <script type="text/javascript">
+        atOptions = {
+            'key' : '389d78db7f9cbf6dd8351bf78f504954',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+        };
+    </script>
+
+    <script async="async" data-cfasync="false"
+        src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js">
+    </script>
+
+</div>
+</div>
+
+</div>
+
 <script>
 
-/* ===== SOUND ENGINE (بدون ملفات) ===== */
-function sound(type){
-    let ctx = new (window.AudioContext || window.webkitAudioContext)();
-    let o = ctx.createOscillator();
-    let g = ctx.createGain();
+/* ===== PARTICLES ===== */
+const c=document.getElementById("bg");
+const ctx=c.getContext("2d");
+c.width=innerWidth;
+c.height=innerHeight;
 
-    o.connect(g);
-    g.connect(ctx.destination);
+let p=[];
+for(let i=0;i<80;i++){
+    p.push({x:Math.random()*c.width,y:Math.random()*c.height,r:2,dx:(Math.random()-0.5),dy:(Math.random()-0.5)});
+}
 
-    if(type==="win"){
-        o.frequency.value = 800;
-    }else if(type==="lose"){
-        o.frequency.value = 120;
-    }else{
-        o.frequency.value = 300;
-    }
+function draw(){
+    ctx.fillStyle="rgba(0,0,0,0.25)";
+    ctx.fillRect(0,0,c.width,c.height);
 
-    g.gain.value = 0.2;
+    ctx.fillStyle="#00fff2";
+    p.forEach(e=>{
+        e.x+=e.dx;
+        e.y+=e.dy;
+        if(e.x<0||e.x>c.width)e.dx*=-1;
+        if(e.y<0||e.y>c.height)e.dy*=-1;
+        ctx.beginPath();
+        ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+        ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+}
+draw();
+
+/* ===== SOUND ===== */
+function sound(t){
+    let a=new AudioContext();
+    let o=a.createOscillator();
+    let g=a.createGain();
+
+    o.connect(g);g.connect(a.destination);
+
+    o.frequency.value = t==="win"?900:t==="lose"?120:300;
+
+    g.gain.value=0.2;
     o.start();
-    setTimeout(()=>o.stop(),150);
+    setTimeout(()=>o.stop(),120);
 }
 
 /* ===== GAME ===== */
-let secret = 0;
-let attempts = 10;
-let score = 0;
-let max = 100;
-let history = [];
+let secret,attempts=10,score=0,max=100;
+let xp=0,level=1,history=[];
+
+let high=localStorage.getItem("high")||0;
+
+/* DAILY */
+let today=new Date().toDateString();
+if(localStorage.getItem("day")!==today){
+    localStorage.setItem("day",today);
+    xp+=30;
+    score+=50;
+}
 
 function start(){
-    let level = document.getElementById("level").value;
 
-    if(level==="easy") max=50;
-    else if(level==="medium") max=100;
-    else max=200;
+    let l=level.value;
 
-    secret = Math.floor(Math.random()*max)+1;
-    attempts = 10;
-    history = [];
+    max=l==="easy"?50:l==="medium"?100:200;
 
-    document.getElementById("left").innerText = attempts;
-    document.getElementById("history").innerHTML = "";
+    secret=Math.floor(Math.random()*max)+1;
+    attempts=10;
+    history=[];
+    left.textContent=attempts;
+    historyBox();
 }
 
 function checkGuess(){
 
-    let val = Number(document.getElementById("guess").value);
-    let box = document.getElementById("box");
+    let v=+guess.value;
+    let box=document.getElementById("box");
 
-    if(!val || val<1 || val>max){
+    if(!v||v<1||v>max){
         box.classList.add("shake");
         setTimeout(()=>box.classList.remove("shake"),300);
-        sound("error");
         return;
     }
 
     attempts--;
-    document.getElementById("left").innerText = attempts;
+    left.textContent=attempts;
 
-    let msg = "";
+    let msg=v<secret?`↑ أعلى من ${v}`:v>secret?`↓ أقل من ${v}`:"✔ صح";
 
-    if(val < secret){
-        msg = `📈 الرقم المطلوب أعلى من ${val}`;
-    }
-    else if(val > secret){
-        msg = `📉 الرقم المطلوب أقل من ${val}`;
-    }
-    else{
-        msg = `🎉 صح! الرقم هو ${secret}`;
-    }
-
-    history.push(val + " → " + msg);
-    document.getElementById("history").innerHTML =
-        history.map(h=>`<div>${h}</div>`).join("");
-
-    document.getElementById("msg").innerText = msg;
+    history.push(v+" → "+msg);
+    historyBox();
 
     sound("click");
 
-    /* WIN */
-    if(val === secret){
-        score += attempts * 10;
-        document.getElementById("score").innerText = score;
+    if(v===secret){
+
+        score+=attempts*10;
+        xp+=20;
+
+        if(xp>=100){
+            xp=0;
+            levelNum();
+        }
+
+        if(score>high){
+            high=score;
+            localStorage.setItem("high",high);
+        }
 
         sound("win");
+        box.classList.add("winGlow");
+        show("WIN 🎉");
 
-        box.classList.add("winFlash");
-
-        document.getElementById("overlay").style.display="flex";
-        document.getElementById("overlay").innerText="YOU WIN 🎉";
-
-        setTimeout(()=>{
-            document.getElementById("overlay").style.display="none";
-            box.classList.remove("winFlash");
-            start();
-        },2000);
-
+        setTimeout(()=>{hide();start();},2000);
         return;
     }
 
-    /* LOSE */
-    if(attempts === 0){
+    if(attempts===0){
         sound("lose");
-
-        box.classList.add("loseShake");
-
-        document.getElementById("overlay").style.display="flex";
-        document.getElementById("overlay").innerText="YOU LOSE 💀";
-
-        setTimeout(()=>{
-            document.getElementById("overlay").style.display="none";
-            box.classList.remove("loseShake");
-            start();
-        },2000);
+        box.classList.add("loseGlow");
+        show("LOSE 💀");
+        setTimeout(()=>{hide();start();},2000);
     }
 
+    updateUI();
 }
 
-document.getElementById("level").addEventListener("change",start);
+function levelNum(){
+    level.textContent=++level;
+}
+
+function updateUI(){
+    scoreEl.textContent=score;
+    xpEl.textContent=xp;
+    lvl.textContent=level;
+    xpFill.style.width=xp+"%";
+}
+
+function historyBox(){
+    historyEl.innerHTML=history.map(h=>`<div>${h}</div>`).join("");
+}
+
+function show(t){
+    overlay.style.display="flex";
+    overlay.textContent=t;
+}
+
+function hide(){
+    overlay.style.display="none";
+}
 
 start();
 
