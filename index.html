@@ -239,6 +239,13 @@ const ctx = c.getContext("2d");
 c.width = innerWidth;
 c.height = innerHeight;
 
+
+
+window.addEventListener("resize", () => {
+    c.width = innerWidth;
+    c.height = innerHeight;
+});
+
 let particles = [];
 
 for (let i = 0; i < 70; i++) {
