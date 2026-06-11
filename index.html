@@ -7,162 +7,133 @@
 
 <style>
 body{
-    margin:0;
-    font-family: Arial;
-    background:#05060a;
-    color:white;
-    overflow:hidden;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
+margin:0;
+font-family: Arial;
+background:#05060a;
+color:white;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
 }
 
 /* BACKGROUND */
 canvas{
-    position:fixed;
-    top:0;
-    left:0;
-    z-index:0;
+position:fixed;
+top:0;
+left:0;
+z-index:0;
 }
 
 .container{
-    position:relative;
-    z-index:2;
+position:relative;
+z-index:2;
 }
 
 /* GAME BOX */
 .gameBox{
-    width:390px;
-    padding:20px;
-    border-radius:16px;
-    background:rgba(0,255,255,0.05);
-    border:1px solid rgba(0,255,255,0.2);
-    box-shadow:0 0 25px rgba(0,255,255,0.2);
-    backdrop-filter: blur(10px);
-    text-align:center;
+width:390px;
+padding:20px;
+border-radius:16px;
+background:rgba(0,255,255,0.05);
+border:1px solid rgba(0,255,255,0.2);
+box-shadow:0 0 25px rgba(0,255,255,0.2);
+backdrop-filter: blur(10px);
+text-align:center;
 }
 
 h1{
-    color:#00fff2;
-    text-shadow:0 0 10px #00fff2;
+color:#00fff2;
+text-shadow:0 0 10px #00fff2;
 }
 
 /* INPUTS */
 select,input{
-    width:100%;
-    padding:10px;
-    margin:6px 0;
-    background:#0b0f1a;
-    border:none;
-    color:white;
-    border-radius:8px;
+width:100%;
+padding:10px;
+margin:6px 0;
+background:#0b0f1a;
+border:none;
+color:white;
+border-radius:8px;
 }
 
 button{
-    width:100%;
-    padding:10px;
-    background:#00fff2;
-    border:none;
-    font-weight:bold;
-    cursor:pointer;
+width:100%;
+padding:10px;
+background:#00fff2;
+border:none;
+font-weight:bold;
+cursor:pointer;
 }
 
 /* META */
 .meta{
-    display:flex;
-    justify-content:space-between;
-    font-size:13px;
-    margin-top:10px;
-    color:#aefcff;
+display:flex;
+justify-content:space-between;
+font-size:13px;
+margin-top:10px;
+color:#aefcff;
 }
 
 /* HISTORY */
 #history{
-    margin-top:10px;
-    text-align:left;
-    font-size:12px;
-    max-height:120px;
-    overflow:auto;
-    padding:8px;
-    background:rgba(0,255,255,0.05);
-    border-radius:8px;
+margin-top:10px;
+text-align:left;
+font-size:12px;
+max-height:120px;
+overflow:auto;
+padding:8px;
+background:rgba(0,255,255,0.05);
+border-radius:8px;
 }
 
 /* XP BAR */
 .xpBar{
-    width:100%;
-    height:8px;
-    background:#111;
-    border-radius:10px;
-    overflow:hidden;
-    margin-top:10px;
+width:100%;
+height:8px;
+background:#111;
+border-radius:10px;
+overflow:hidden;
+margin-top:10px;
 }
 
 .xpFill{
-    height:100%;
-    width:0%;
-    background:linear-gradient(90deg,#00fff2,#00ff7b);
-    transition:0.3s;
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#00fff2,#00ff7b);
+transition:0.3s;
 }
 
 /* OVERLAY */
 .overlay{
-    position:absolute;
-    inset:0;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    font-size:28px;
-    background:rgba(0,0,0,0.6);
-    border-radius:16px;
+position:absolute;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+font-size:28px;
+background:rgba(0,0,0,0.6);
+border-radius:16px;
 }
 
 /* SHAKE */
 .shake{animation:shake 0.3s}
 @keyframes shake{
-    0%{transform:translateX(0)}
-    25%{transform:translateX(-6px)}
-    50%{transform:translateX(6px)}
-    100%{transform:translateX(0)}
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+100%{transform:translateX(0)}
 }
 
-/* ADS */
 #ad-container{
-    margin-top:15px;
-    text-align:center;
-  
+margin-top:15px;
+text-align:center;
 }
-
-
 
 @media (max-width: 500px){
-    .gameBox{
-        width: 92%;
-        padding: 15px;
-        border-radius: 14px;
-    }
-
-    h1{
-        font-size: 20px;
-    }
-
-    .meta{
-        font-size: 12px;
-    }
-
-    #history{
-        max-height: 100px;
-        font-size: 11px;
-    }
-
-    button{
-        padding: 12px;
-    }
-
-    input, select{
-        font-size: 14px;
-    }
+.gameBox{width:92%}
 }
 </style>
 </head>
@@ -178,26 +149,26 @@ button{
 <h1>CYBER GUESS</h1>
 
 <select id="level">
-    <option value="easy">EASY (1-50)</option>
-    <option value="medium">MEDIUM (1-100)</option>
-    <option value="hard">HARD (1-200)</option>
+<option value="easy">EASY (1-50)</option>
+<option value="medium">MEDIUM (1-100)</option>
+<option value="hard">HARD (1-200)</option>
 </select>
 
 <input type="number" id="guess" placeholder="ENTER NUMBER">
 <button onclick="checkGuess()">HACK</button>
 
 <div class="meta">
-    <div>TRIES: <span id="left">10</span></div>
-    <div>SCORE: <span id="score">0</span></div>
+<div>TRIES: <span id="left">10</span></div>
+<div>SCORE: <span id="score">0</span></div>
 </div>
 
 <div class="meta">
-    <div>LEVEL: <span id="lvl">1</span></div>
-    <div>XP: <span id="xp">0</span></div>
+<div>LEVEL: <span id="lvl">1</span></div>
+<div>XP: <span id="xp">0</span></div>
 </div>
 
 <div class="meta">
-    <div>HIGH SCORE: <span id="high">0</span></div>
+<div>HIGH SCORE: <span id="high">0</span></div>
 </div>
 
 <div class="xpBar"><div class="xpFill" id="xpFill"></div></div>
@@ -208,32 +179,182 @@ button{
 
 </div>
 
-<!-- ADS -->
-<div id="ad-container" >
-
-<script>
-  atOptions = {
-    'key' : '389d78db7f9cbf6dd8351bf78f504954',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script>
-  atOptions = {
-    'key' : '389d78db7f9cbf6dd8351bf78f504954',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/389d78db7f9cbf6dd8351bf78f504954/invoke.js"></script>
-
 </div>
 
-</div>
+<script>
+/* ===== PARTICLES ===== */
+const c = document.getElementById("bg");
+const ctx = c.getContext("2d");
 
-<script> /* ===== PARTICLES ===== */ const c=document.getElementById("bg"); const ctx=c.getContext("2d"); c.width=innerWidth; c.height=innerHeight; let particles=[]; for(let i=0;i<70;i++){ particles.push({ x:Math.random()*c.width, y:Math.random()*c.height, r:2, dx:(Math.random()-0.5), dy:(Math.random()-0.5) }); } function draw(){ ctx.fillStyle="rgba(0,0,0,0.25)"; ctx.fillRect(0,0,c.width,c.height); ctx.fillStyle="#00fff2"; particles.forEach(p=>{ p.x+=p.dx; p.y+=p.dy; if(p.x<0||p.x>c.width)p.dx*=-1; if(p.y<0||p.y>c.height)p.dy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); }); requestAnimationFrame(draw); } draw(); /* ===== GAME STATE ===== */ let secret; let attempts=10; let score=0; let xp=0; let level=1; let max=50; let history=[]; /* HIGH SCORE */ let high=localStorage.getItem("high")||0; document.getElementById("high").textContent=high; /* DAILY REWARD */ let today=new Date().toDateString(); if(localStorage.getItem("daily")!==today){ localStorage.setItem("daily",today); xp+=30; score+=50; } /* ===== SET LEVEL ===== */ function setLevel(){ let l=document.getElementById("level").value; if(l==="easy") max=50; else if(l==="medium") max=100; else max=200; secret=Math.floor(Math.random()*max)+1; attempts=10; history=[]; document.getElementById("left").textContent=attempts; document.getElementById("history").innerHTML=""; document.getElementById("guess").value=""; } /* ===== UPDATE UI ===== */ function updateUI(){ document.getElementById("score").textContent=score; document.getElementById("xp").textContent=xp; document.getElementById("lvl").textContent=level; document.getElementById("xpFill").style.width=(xp/100)*100+"%"; } /* ===== CHECK ===== */ function checkGuess(){ let v=Number(document.getElementById("guess").value); let box=document.getElementById("box"); if(!v || v<1 || v>max){ box.classList.add("shake"); setTimeout(()=>box.classList.remove("shake"),300); alert("دخل رقم بين 1 و "+max); return; } attempts--; document.getElementById("left").textContent=attempts; let msg=""; if(v<secret) msg="↑ أعلى من "+v; else if(v>secret) msg="↓ أقل من "+v; else msg="✔ صح"; history.push(v+" → "+msg); document.getElementById("history").innerHTML= history.map(h=><div>${h}</div>).join(""); /* WIN */ if(v===secret){ score+=attempts*10; xp+=20; /* LEVEL UP */ if(xp>=100){ xp=0; level++; } /* HIGH SCORE */ if(score>high){ high=score; localStorage.setItem("high",high); } updateUI(); document.getElementById("high").textContent=high; show("WIN 🎉"); setTimeout(()=>{ hide(); setLevel(); },2000); return; } /* LOSE */ if(attempts===0){ show("LOSE 💀"); setTimeout(()=>{ hide(); setLevel(); },2000); } document.getElementById("guess").value = ""; document.getElementById("guess").focus(); updateUI(); } /* ===== OVERLAY ===== */ function show(t){ overlay.style.display="flex"; overlay.textContent=t; } function hide(){ overlay.style.display="none"; } document.getElementById("guess").addEventListener("keydown", function(e){ if(e.key === "Enter"){ checkGuess(); } }); /* EVENTS */ document.getElementById("level").addEventListener("change",setLevel); /* INIT */ setLevel(); updateUI(); </script>
+c.width = innerWidth;
+c.height = innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 70; i++) {
+particles.push({
+x: Math.random() * c.width,
+y: Math.random() * c.height,
+r: 2,
+dx: (Math.random() - 0.5),
+dy: (Math.random() - 0.5)
+});
+}
+
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.25)";
+ctx.fillRect(0,0,c.width,c.height);
+
+ctx.fillStyle="#00fff2";
+
+particles.forEach(p=>{
+p.x += p.dx;
+p.y += p.dy;
+
+if(p.x<0||p.x>c.width)p.dx*=-1;
+if(p.y<0||p.y>c.height)p.dy*=-1;
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fill();
+});
+
+requestAnimationFrame(draw);
+}
+draw();
+
+/* ===== GAME ===== */
+let secret;
+let attempts = 10;
+let score = 0;
+let xp = 0;
+let level = 1;
+let max = 50;
+let history = [];
+
+let high = Number(localStorage.getItem("high")) || 0;
+document.getElementById("high").textContent = high;
+
+let overlay = document.getElementById("overlay");
+
+let today = new Date().toDateString();
+if(localStorage.getItem("daily") !== today){
+localStorage.setItem("daily", today);
+xp += 30;
+score += 50;
+}
+
+function setLevel(){
+let l = document.getElementById("level").value;
+
+if(l==="easy") max=50;
+else if(l==="medium") max=100;
+else max=200;
+
+secret = Math.floor(Math.random()*max)+1;
+attempts = 10;
+history = [];
+
+document.getElementById("left").textContent = attempts;
+document.getElementById("history").innerHTML = "";
+document.getElementById("guess").value = "";
+}
+
+function updateUI(){
+document.getElementById("score").textContent = score;
+document.getElementById("xp").textContent = xp;
+document.getElementById("lvl").textContent = level;
+
+document.getElementById("xpFill").style.width = (xp/100)*100 + "%";
+}
+
+function show(t){
+overlay.style.display="flex";
+overlay.textContent=t;
+}
+
+function hide(){
+overlay.style.display="none";
+}
+
+function checkGuess(){
+
+let v = Number(document.getElementById("guess").value);
+let box = document.getElementById("box");
+
+if(isNaN(v) || v<1 || v>max){
+box.classList.add("shake");
+setTimeout(()=>box.classList.remove("shake"),300);
+alert("ادخل رقم بين 1 و "+max);
+return;
+}
+
+attempts--;
+document.getElementById("left").textContent = attempts;
+
+let msg = "";
+
+if(v < secret) msg = "↑ أعلى من "+v;
+else if(v > secret) msg = "↓ أقل من "+v;
+else msg = "✔ صح";
+
+history.push(v+" → "+msg);
+
+document.getElementById("history").innerHTML =
+history.map(h=>`<div>${h}</div>`).join("");
+
+if(v === secret){
+
+score += attempts*10;
+xp += 20;
+
+if(xp >= 100){
+xp = 0;
+level++;
+}
+
+if(score > high){
+high = score;
+localStorage.setItem("high", high);
+}
+
+document.getElementById("high").textContent = high;
+updateUI();
+
+show("WIN 🎉");
+
+setTimeout(()=>{
+hide();
+setLevel();
+},2000);
+
+return;
+}
+
+if(attempts === 0){
+show("LOSE 💀");
+
+setTimeout(()=>{
+hide();
+setLevel();
+},2000);
+}
+
+document.getElementById("guess").value = "";
+document.getElementById("guess").focus();
+
+updateUI();
+}
+
+document.getElementById("level").addEventListener("change", setLevel);
+
+document.getElementById("guess").addEventListener("keydown", e=>{
+if(e.key==="Enter") checkGuess();
+});
+
+setLevel();
+updateUI();
+</script>
+
+</body>
 </html>
