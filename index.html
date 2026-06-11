@@ -12,10 +12,10 @@ body{
     background: radial-gradient(circle at top,#141a33,#070a14);
     color:white;
     display:flex;
+    flex-direction:column;
     justify-content:center;
     align-items:center;
-    height:100vh;
-    overflow:hidden;
+    min-height:100vh;
 }
 
 .gameBox{
@@ -58,7 +58,6 @@ button:hover{background:#a29bfe}
     justify-content:space-between;
     font-size:14px;
     margin-top:10px;
-    opacity:0.9;
 }
 
 .shake{animation:shake 0.25s}
@@ -91,7 +90,11 @@ button:hover{background:#a29bfe}
     to{transform:scale(1);opacity:1}
 }
 
-.small{font-size:13px;opacity:0.8;margin-top:8px}
+#ad-container{
+    margin-top:20px;
+    width:360px;
+    text-align:center;
+}
 </style>
 
 </head>
@@ -124,6 +127,11 @@ button:hover{background:#a29bfe}
     <div class="overlay" id="overlay"></div>
 </div>
 
+<!-- ADS SECTION (حط كود Adsterra هنا) -->
+<div id="ad-container">
+    <!-- ضع كود الإعلان هنا -->
+</div>
+
 <script>
 
 let secret, max = 100;
@@ -144,7 +152,7 @@ function startGame(){
     attempts = 10;
 
     document.getElementById("left").innerText = attempts;
-    document.getElementById("msg").innerText = "Start guessing...";
+    document.getElementById("msg").innerText = "";
 }
 
 function playSound(type){
@@ -155,13 +163,9 @@ function playSound(type){
     o.connect(g);
     g.connect(ctx.destination);
 
-    if(type==="win"){
-        o.frequency.value = 700;
-    }else if(type==="lose"){
-        o.frequency.value = 120;
-    }else{
-        o.frequency.value = 300;
-    }
+    if(type==="win") o.frequency.value = 700;
+    else if(type==="lose") o.frequency.value = 120;
+    else o.frequency.value = 300;
 
     g.gain.setValueAtTime(0.2, ctx.currentTime);
     o.start();
@@ -183,6 +187,7 @@ function checkGuess(){
 
     if(value === secret){
         score += attempts * 10;
+        document.getElementById("score").innerText = score;
         endGame(true);
     }
     else if(attempts === 0){
@@ -211,11 +216,11 @@ function endGame(win){
     if(win){
         playSound("win");
         overlay.className="overlay win pop";
-        overlay.innerHTML = `You Win 🎉<br>Score: ${score}`;
+        overlay.innerHTML = "You Win 🎉";
     }else{
         playSound("lose");
         overlay.className="overlay lose pop";
-        overlay.innerHTML = `You Lose 💀<br>Number was ${secret}`;
+        overlay.innerHTML = "You Lose 💀<br>Number was " + secret;
     }
 
     if(score > high){
@@ -227,7 +232,7 @@ function endGame(win){
     setTimeout(()=>{
         overlay.style.display="none";
         startGame();
-    },3000);
+    },2500);
 }
 
 document.getElementById("level").addEventListener("change", startGame);
@@ -235,13 +240,10 @@ document.getElementById("level").addEventListener("change", startGame);
 startGame();
 
 </script>
-
-
-
-
-
 <!--ads-->
-
+<div class="ad-container" id="ad-container">
+    <script async="async" data-cfasync="false" src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js"></script>
+<div id="container-033a44687247c8e8df2d89f7c68bd9db"></div>
 <script>
   atOptions = {
     'key' : '389d78db7f9cbf6dd8351bf78f504954',
@@ -253,12 +255,6 @@ startGame();
 </script>
 <script src="https://www.highperformanceformat.com/389d78db7f9cbf6dd8351bf78f504954/invoke.js"></script>
 
-
-
-<script async="async" data-cfasync="false" src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js"></script>
-<div id="container-033a44687247c8e8df2d89f7c68bd9db"></div>
-
-
-
+</div>
 </body>
 </html>
