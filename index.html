@@ -54,7 +54,120 @@
 
 </div>
 
-<script src="app.js"></script>
+<script>
+    // Generate a random number between 1 and 100
+let randomNumber = Math.floor(Math.random() * 100) + 1;
+
+const submit = document.querySelector('#subt');
+const userInput = document.querySelector('#guessField');
+const guessSlot = document.querySelector('.guesses');
+const remaining = document.querySelector('.lastResult');
+const startOver = document.querySelector('.resultParas');
+const lowOrHi = document.querySelector('.lowOrHi');
+
+const p = document.createElement('p');
+
+let previousGuesses = [];
+let numGuesses = 0;
+let playGame = true;
+
+const maxGuesses = 10;
+
+// Event
+submit.addEventListener("click", function (e) {
+    e.preventDefault();
+    if (!playGame) return;
+
+    const guess = Number(userInput.value);
+    validateGuess(guess);
+});
+
+// Validate input
+function validateGuess(guess) {
+    if (isNaN(guess)) {
+        alert("ادخل رقم صحيح");
+        return;
+    }
+    if (guess < 1 || guess > 100) {
+        alert("الرقم لازم يكون بين 1 و 100");
+        return;
+    }
+
+    previousGuesses.push(guess);
+    numGuesses++;
+
+    displayGuesses(guess);
+    checkGuess(guess);
+    checkGameOver();
+}
+
+// Check guess
+function checkGuess(guess) {
+    if (guess === randomNumber) {
+        displayMessage(`فزت! الرقم الصحيح هو ${randomNumber}`);
+        endGame();
+    } else if (guess > randomNumber) {
+        displayMessage("أعلى من الرقم المطلوب");
+    } else {
+        displayMessage("أقل من الرقم المطلوب");
+    }
+}
+
+// Update UI guesses
+function displayGuesses(guess) {
+    userInput.value = "";
+    guessSlot.innerHTML += `${guess} `;
+    remaining.innerHTML = `${maxGuesses - numGuesses}`;
+}
+
+// Check game over
+function checkGameOver() {
+    if (numGuesses >= maxGuesses && previousGuesses[previousGuesses.length - 1] !== randomNumber) {
+        displayMessage(`خسرت! الرقم كان ${randomNumber}`);
+        endGame();
+    }
+}
+
+// Show message
+function displayMessage(message) {
+    lowOrHi.innerHTML = `<h2>${message}</h2>`;
+}
+
+// End game
+function endGame() {
+    userInput.setAttribute("disabled", "");
+
+    p.classList.add("button");
+    p.innerHTML = `<h2 id="newgame">ابدأ لعبة جديدة</h2>`;
+    startOver.appendChild(p);
+
+    playGame = false;
+
+    newGame();
+}
+
+// Restart game
+function newGame() {
+    const newGameButton = document.querySelector("#newgame");
+
+    newGameButton.addEventListener("click", function () {
+        randomNumber = Math.floor(Math.random() * 100) + 1;
+
+        previousGuesses = [];
+        numGuesses = 0;
+        playGame = true;
+
+        guessSlot.innerHTML = "";
+        lowOrHi.innerHTML = "";
+        remaining.innerHTML = maxGuesses;
+
+        userInput.removeAttribute("disabled");
+        userInput.value = "";
+
+        startOver.removeChild(p);
+    });
+}
+</script>
 
 
 
@@ -70,6 +183,230 @@
   };
 </script>
 <script src="https://www.highperformanceformat.com/389d78db7f9cbf6dd8351bf78f504954/invoke.js"></script>
+<style>
+    /* ===== BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+html {
+    font-family: "Segoe UI", sans-serif;
+    background: #0b0f1a;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #fff;
+    background: radial-gradient(circle at top, #1b1f3a, #0b0f1a);
+}
+
+/* ===== ANIMATED BACKGROUND ===== */
+body::before {
+    content: "";
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        from 180deg,
+        #00f5ff,
+        #7b2ff7,
+        #ff4d6d,
+        #00f5ff
+    );
+    animation: rotateBg 10s linear infinite;
+    opacity: 0.08;
+    z-index: -1;
+}
+
+@keyframes rotateBg {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== TITLE ===== */
+h1 {
+    font-size: 32px;
+    text-align: center;
+    padding: 15px 25px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 25px rgba(0,255,255,0.2);
+    animation: popIn 0.8s ease;
+}
+
+/* ===== TEXT ===== */
+p {
+    margin-top: 10px;
+    opacity: 0.8;
+    text-align: center;
+}
+
+/* ===== CARD ===== */
+#wrapper {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 420px;
+    padding: 25px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    animation: slideUp 0.8s ease;
+}
+
+/* ===== LABEL ===== */
+#guess {
+    display: block;
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #00f5ff;
+}
+
+/* ===== INPUT ===== */
+#guessField {
+    width: 100%;
+    padding: 15px;
+    font-size: 26px;
+    text-align: center;
+    border-radius: 14px;
+    border: none;
+    outline: none;
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    transition: 0.3s;
+}
+
+#guessField:focus {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00f5ff;
+}
+
+/* ===== BUTTON ===== */
+#subt {
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    font-size: 20px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: #000;
+    background: linear-gradient(90deg, #00f5ff, #7b2ff7);
+    transition: 0.3s;
+}
+
+#subt:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0,245,255,0.5);
+}
+
+/* ===== RESULT BOX ===== */
+.resultParas {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.guesses, .lastResult {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    animation: fadeIn 0.5s ease;
+}
+
+/* ===== MESSAGE ===== */
+.lowOrHi h1 {
+    font-size: 20px;
+    margin-top: 15px;
+    animation: pulse 1s infinite;
+}
+
+/* ===== NEW GAME ===== */
+.button {
+    margin-top: 20px;
+    cursor: pointer;
+    animation: popIn 0.4s ease;
+}
+
+#newgame {
+    padding: 12px;
+    border-radius: 14px;
+    text-align: center;
+    background: linear-gradient(90deg, #ff4d6d, #ffcc00);
+    color: #000;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#newgame:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(255,77,109,0.4);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* ===== SHAKE EFFECT (FOR JS) ===== */
+.shake {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0% { transform: translate(0); }
+    20% { transform: translate(-8px, 5px); }
+    40% { transform: translate(8px, -5px); }
+    60% { transform: translate(-8px, 5px); }
+    80% { transform: translate(8px, -5px); }
+    100% { transform: translate(0); }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 22px;
+    }
+
+    #guessField {
+        font-size: 20px;
+    }
+
+    #subt {
+        font-size: 18px;
+    }
+}
+</style>
 </body>
 </html>
