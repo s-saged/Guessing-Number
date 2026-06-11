@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guess Game Pro</title>
+<title>Guess Game</title>
 
 <style>
 body{
@@ -13,12 +13,11 @@ body{
     color:white;
     display:flex;
     flex-direction:column;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     min-height:100vh;
 }
 
-/* GAME BOX */
 .gameBox{
     width:360px;
     padding:20px;
@@ -27,10 +26,11 @@ body{
     box-shadow:0 0 25px rgba(0,0,0,0.6);
     backdrop-filter: blur(12px);
     text-align:center;
-    position:relative;
 }
 
-h1{margin-bottom:10px}
+h1{
+    margin-bottom:10px;
+}
 
 select, input{
     width:100%;
@@ -49,14 +49,12 @@ button{
     color:white;
     border-radius:8px;
     cursor:pointer;
-    transition:0.2s;
 }
 
 button:hover{
     background:#a29bfe;
 }
 
-/* INFO ROW */
 .meta{
     display:flex;
     justify-content:space-between;
@@ -64,47 +62,31 @@ button:hover{
     margin-top:10px;
 }
 
-/* SHAKE EFFECT */
-.shake{
-    animation:shake 0.25s;
+#history{
+    margin-top:10px;
+    font-size:13px;
+    text-align:left;
+    max-height:120px;
+    overflow:auto;
+    background:rgba(255,255,255,0.05);
+    padding:10px;
+    border-radius:8px;
 }
 
-@keyframes shake{
-    0%{transform:translateX(0)}
-    25%{transform:translateX(-6px)}
-    50%{transform:translateX(6px)}
-    100%{transform:translateX(0)}
-}
-
-/* OVERLAY */
 .overlay{
     position:absolute;
     inset:0;
     display:none;
     justify-content:center;
     align-items:center;
-    flex-direction:column;
     font-size:22px;
     border-radius:16px;
 }
 
-.win{background:rgba(0,255,120,0.15)}
-.lose{background:rgba(255,0,80,0.15)}
-
-.pop{animation:pop 0.4s}
-
-@keyframes pop{
-    from{transform:scale(0.6);opacity:0}
-    to{transform:scale(1);opacity:1}
-}
-
-/* ADS AREA */
 #ad-container{
     margin-top:20px;
     width:360px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    text-align:center;
 }
 </style>
 
@@ -113,50 +95,55 @@ button:hover{
 
 <div class="gameBox">
 
-    <h1>Guess Game</h1>
+<h1>Guess Game</h1>
 
-    <select id="level">
-        <option value="easy">Easy (1-50)</option>
-        <option value="medium">Medium (1-100)</option>
-        <option value="hard">Hard (1-200)</option>
-    </select>
+<select id="level">
+    <option value="easy">Easy (1-50)</option>
+    <option value="medium">Medium (1-100)</option>
+    <option value="hard">Hard (1-200)</option>
+</select>
 
-    <input type="number" id="guess" placeholder="Enter number">
+<input type="number" id="guess" placeholder="Enter number">
 
-    <button onclick="checkGuess()">Submit</button>
+<button onclick="checkGuess()">Submit</button>
 
-    <div class="meta">
-        <div>Attempts: <span id="left">10</span></div>
-        <div>Score: <span id="score">0</span></div>
-    </div>
+<div class="meta">
+    <div>Attempts: <span id="left">10</span></div>
+    <div>Score: <span id="score">0</span></div>
+</div>
 
-    <div class="meta">
-        <div>High Score: <span id="high">0</span></div>
-    </div>
+<div class="meta">
+    <div>High Score: <span id="high">0</span></div>
+</div>
 
-    <p id="msg"></p>
+<div id="history"></div>
 
-    <div class="overlay" id="overlay"></div>
+<p id="msg"></p>
+
+<div class="overlay" id="overlay"></div>
 
 </div>
 
-<!-- ADS AREA (حط كود Adsterra هنا) -->
+<!-- 🔥 ADS AREA -->
 <div id="ad-container">
     <!-- ADS HERE -->
-     <script async="async" data-cfasync="false" src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js"></script>
-<div id="container-033a44687247c8e8df2d89f7c68bd9db"></div>
+<div id="ad-container">
 
-     <script>
-  atOptions = {
-    'key' : '389d78db7f9cbf6dd8351bf78f504954',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/389d78db7f9cbf6dd8351bf78f504954/invoke.js"></script>
+    <script type="text/javascript">
+        atOptions = {
+            'key' : '389d78db7f9cbf6dd8351bf78f504954',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+        };
+    </script>
 
+    <script async="async" data-cfasync="false"
+        src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js">
+    </script>
+
+</div>
 </div>
 
 <script>
@@ -164,102 +151,81 @@ button:hover{
 let secret, max = 100;
 let attempts = 10;
 let score = 0;
-let high = localStorage.getItem("highScore") || 0;
+let history = [];
 
+let high = localStorage.getItem("highScore") || 0;
 document.getElementById("high").innerText = high;
 
 function startGame(){
+
     let level = document.getElementById("level").value;
 
-    if(level==="easy") max = 50;
-    else if(level==="medium") max = 100;
+    if(level === "easy") max = 50;
+    else if(level === "medium") max = 100;
     else max = 200;
 
-    secret = Math.floor(Math.random()*max)+1;
+    secret = Math.floor(Math.random() * max) + 1;
     attempts = 10;
+    history = [];
 
     document.getElementById("left").innerText = attempts;
     document.getElementById("msg").innerText = "";
-}
-
-function playSound(type){
-    let ctx = new (window.AudioContext || window.webkitAudioContext)();
-    let o = ctx.createOscillator();
-    let g = ctx.createGain();
-
-    o.connect(g);
-    g.connect(ctx.destination);
-
-    if(type==="win") o.frequency.value = 700;
-    else if(type==="lose") o.frequency.value = 120;
-    else o.frequency.value = 300;
-
-    g.gain.setValueAtTime(0.2, ctx.currentTime);
-    o.start();
-    setTimeout(()=>o.stop(),150);
+    document.getElementById("history").innerHTML = "";
 }
 
 function checkGuess(){
+
     let input = document.getElementById("guess");
     let value = Number(input.value);
 
-    if(!value || value<1 || value>max){
-        shake();
-        playSound("error");
+    if(!value || value < 1 || value > max){
         return;
     }
 
     attempts--;
     document.getElementById("left").innerText = attempts;
 
+    let message = "";
+
+    if(value < secret){
+        message = `الرقم المطلوب أعلى من ${value}`;
+    }
+    else if(value > secret){
+        message = `الرقم المطلوب أقل من ${value}`;
+    }
+    else{
+        message = `مبروك 🎉 الرقم الصحيح هو ${secret}`;
+    }
+
+    history.push(`أنت خمنت ${value} → ${message}`);
+
+    document.getElementById("history").innerHTML =
+        history.map(h => `<div>• ${h}</div>`).join("");
+
+    document.getElementById("msg").innerText = message;
+
+    input.value = "";
+
     if(value === secret){
         score += attempts * 10;
         document.getElementById("score").innerText = score;
-        endGame(true);
+
+        if(score > high){
+            high = score;
+            localStorage.setItem("highScore", high);
+            document.getElementById("high").innerText = high;
+        }
+
+        setTimeout(startGame, 2000);
+        return;
     }
-    else if(attempts === 0){
-        endGame(false);
-    }
-    else{
+
+    if(attempts === 0){
         document.getElementById("msg").innerText =
-        value > secret ? "Too high" : "Too low";
-        shake();
-        playSound("error");
+        `خسرت 😅 الرقم كان ${secret}`;
+
+        setTimeout(startGame, 2000);
     }
-
-    input.value="";
-}
-
-function shake(){
-    let box = document.querySelector(".gameBox");
-    box.classList.add("shake");
-    setTimeout(()=>box.classList.remove("shake"),250);
-}
-
-function endGame(win){
-    let overlay = document.getElementById("overlay");
-    overlay.style.display="flex";
-
-    if(win){
-        playSound("win");
-        overlay.className="overlay win pop";
-        overlay.innerHTML = "You Win 🎉";
-    }else{
-        playSound("lose");
-        overlay.className="overlay lose pop";
-        overlay.innerHTML = "You Lose 💀<br>Number was " + secret;
-    }
-
-    if(score > high){
-        high = score;
-        localStorage.setItem("highScore", high);
-        document.getElementById("high").innerText = high;
-    }
-
-    setTimeout(()=>{
-        overlay.style.display="none";
-        startGame();
-    },2500);
 }
 
 document.getElementById("level").addEventListener("change", startGame);
