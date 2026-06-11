@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guess Game</title>
+<title>Guess Game Pro FX</title>
 
 <style>
 body{
     margin:0;
     font-family: Arial;
-    background: radial-gradient(circle at top,#141a33,#070a14);
+    background: radial-gradient(circle at top,#0f1530,#060810);
     color:white;
     display:flex;
     flex-direction:column;
@@ -23,22 +23,20 @@ body{
     padding:20px;
     background: rgba(255,255,255,0.05);
     border-radius:16px;
-    box-shadow:0 0 25px rgba(0,0,0,0.6);
-    backdrop-filter: blur(12px);
     text-align:center;
+    position:relative;
+    box-shadow:0 0 30px rgba(0,0,0,0.7);
+    transition:0.3s;
 }
 
-h1{
-    margin-bottom:10px;
-}
+h1{margin-bottom:10px}
 
-select, input{
+select,input{
     width:100%;
     padding:10px;
     margin:8px 0;
     border:none;
     border-radius:8px;
-    outline:none;
 }
 
 button{
@@ -49,12 +47,12 @@ button{
     color:white;
     border-radius:8px;
     cursor:pointer;
+    transition:0.2s;
 }
 
-button:hover{
-    background:#a29bfe;
-}
+button:hover{background:#a29bfe}
 
+/* META */
 .meta{
     display:flex;
     justify-content:space-between;
@@ -62,15 +60,52 @@ button:hover{
     margin-top:10px;
 }
 
+/* HISTORY */
 #history{
     margin-top:10px;
-    font-size:13px;
     text-align:left;
+    font-size:13px;
     max-height:120px;
     overflow:auto;
-    background:rgba(255,255,255,0.05);
     padding:10px;
+    background:rgba(255,255,255,0.05);
     border-radius:8px;
+}
+
+/* ===== ANIMATIONS ===== */
+
+.shake{
+    animation:shake 0.3s;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0)}
+    25%{transform:translateX(-8px)}
+    50%{transform:translateX(8px)}
+    100%{transform:translateX(0)}
+}
+
+/* WIN */
+.winFlash{
+    animation:winFlash 0.8s;
+}
+
+@keyframes winFlash{
+    0%{box-shadow:0 0 0px green}
+    50%{box-shadow:0 0 40px green}
+    100%{box-shadow:0 0 0px green}
+}
+
+/* LOSE */
+.loseShake{
+    animation:loseShake 0.5s;
+}
+
+@keyframes loseShake{
+    0%{transform:scale(1)}
+    25%{transform:scale(1.05)}
+    50%{transform:scale(0.95)}
+    100%{transform:scale(1)}
 }
 
 .overlay{
@@ -79,28 +114,24 @@ button:hover{
     display:none;
     justify-content:center;
     align-items:center;
-    font-size:22px;
+    font-size:26px;
+    background:rgba(0,0,0,0.6);
     border-radius:16px;
 }
 
-#ad-container{
-    margin-top:20px;
-    width:360px;
-    text-align:center;
-}
 </style>
-
 </head>
+
 <body>
 
-<div class="gameBox">
+<div class="gameBox" id="box">
 
 <h1>Guess Game</h1>
 
 <select id="level">
-    <option value="easy">Easy (1-50)</option>
-    <option value="medium">Medium (1-100)</option>
-    <option value="hard">Hard (1-200)</option>
+    <option value="easy">Easy</option>
+    <option value="medium">Medium</option>
+    <option value="hard">Hard</option>
 </select>
 
 <input type="number" id="guess" placeholder="Enter number">
@@ -112,125 +143,137 @@ button:hover{
     <div>Score: <span id="score">0</span></div>
 </div>
 
-<div class="meta">
-    <div>High Score: <span id="high">0</span></div>
-</div>
+<p id="msg"></p>
 
 <div id="history"></div>
-
-<p id="msg"></p>
 
 <div class="overlay" id="overlay"></div>
 
 </div>
 
-<!-- 🔥 ADS AREA -->
-<div id="ad-container">
-    <!-- ADS HERE -->
-<div id="ad-container">
-
-    <script type="text/javascript">
-        atOptions = {
-            'key' : '389d78db7f9cbf6dd8351bf78f504954',
-            'format' : 'iframe',
-            'height' : 50,
-            'width' : 320,
-            'params' : {}
-        };
-    </script>
-
-    <script async="async" data-cfasync="false"
-        src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js">
-    </script>
-
-</div>
-</div>
-
 <script>
 
-let secret, max = 100;
+/* ===== SOUND ENGINE (بدون ملفات) ===== */
+function sound(type){
+    let ctx = new (window.AudioContext || window.webkitAudioContext)();
+    let o = ctx.createOscillator();
+    let g = ctx.createGain();
+
+    o.connect(g);
+    g.connect(ctx.destination);
+
+    if(type==="win"){
+        o.frequency.value = 800;
+    }else if(type==="lose"){
+        o.frequency.value = 120;
+    }else{
+        o.frequency.value = 300;
+    }
+
+    g.gain.value = 0.2;
+    o.start();
+    setTimeout(()=>o.stop(),150);
+}
+
+/* ===== GAME ===== */
+let secret = 0;
 let attempts = 10;
 let score = 0;
+let max = 100;
 let history = [];
 
-let high = localStorage.getItem("highScore") || 0;
-document.getElementById("high").innerText = high;
-
-function startGame(){
-
+function start(){
     let level = document.getElementById("level").value;
 
-    if(level === "easy") max = 50;
-    else if(level === "medium") max = 100;
-    else max = 200;
+    if(level==="easy") max=50;
+    else if(level==="medium") max=100;
+    else max=200;
 
-    secret = Math.floor(Math.random() * max) + 1;
+    secret = Math.floor(Math.random()*max)+1;
     attempts = 10;
     history = [];
 
     document.getElementById("left").innerText = attempts;
-    document.getElementById("msg").innerText = "";
     document.getElementById("history").innerHTML = "";
 }
 
 function checkGuess(){
 
-    let input = document.getElementById("guess");
-    let value = Number(input.value);
+    let val = Number(document.getElementById("guess").value);
+    let box = document.getElementById("box");
 
-    if(!value || value < 1 || value > max){
+    if(!val || val<1 || val>max){
+        box.classList.add("shake");
+        setTimeout(()=>box.classList.remove("shake"),300);
+        sound("error");
         return;
     }
 
     attempts--;
     document.getElementById("left").innerText = attempts;
 
-    let message = "";
+    let msg = "";
 
-    if(value < secret){
-        message = `الرقم المطلوب أعلى من ${value}`;
+    if(val < secret){
+        msg = `📈 الرقم المطلوب أعلى من ${val}`;
     }
-    else if(value > secret){
-        message = `الرقم المطلوب أقل من ${value}`;
+    else if(val > secret){
+        msg = `📉 الرقم المطلوب أقل من ${val}`;
     }
     else{
-        message = `مبروك 🎉 الرقم الصحيح هو ${secret}`;
+        msg = `🎉 صح! الرقم هو ${secret}`;
     }
 
-    history.push(`أنت خمنت ${value} → ${message}`);
-
+    history.push(val + " → " + msg);
     document.getElementById("history").innerHTML =
-        history.map(h => `<div>• ${h}</div>`).join("");
+        history.map(h=>`<div>${h}</div>`).join("");
 
-    document.getElementById("msg").innerText = message;
+    document.getElementById("msg").innerText = msg;
 
-    input.value = "";
+    sound("click");
 
-    if(value === secret){
+    /* WIN */
+    if(val === secret){
         score += attempts * 10;
         document.getElementById("score").innerText = score;
 
-        if(score > high){
-            high = score;
-            localStorage.setItem("highScore", high);
-            document.getElementById("high").innerText = high;
-        }
+        sound("win");
 
-        setTimeout(startGame, 2000);
+        box.classList.add("winFlash");
+
+        document.getElementById("overlay").style.display="flex";
+        document.getElementById("overlay").innerText="YOU WIN 🎉";
+
+        setTimeout(()=>{
+            document.getElementById("overlay").style.display="none";
+            box.classList.remove("winFlash");
+            start();
+        },2000);
+
         return;
     }
 
+    /* LOSE */
     if(attempts === 0){
-        document.getElementById("msg").innerText =
-        `خسرت 😅 الرقم كان ${secret}`;
+        sound("lose");
 
-        setTimeout(startGame, 2000);
+        box.classList.add("loseShake");
+
+        document.getElementById("overlay").style.display="flex";
+        document.getElementById("overlay").innerText="YOU LOSE 💀";
+
+        setTimeout(()=>{
+            document.getElementById("overlay").style.display="none";
+            box.classList.remove("loseShake");
+            start();
+        },2000);
     }
+
 }
 
-document.getElementById("level").addEventListener("change", startGame);
+document.getElementById("level").addEventListener("change",start);
 
-startGame();
+start();
 
 </script>
 
