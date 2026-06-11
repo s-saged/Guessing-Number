@@ -1,413 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="icon.png">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="shortcut icon" href="icon.png">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber Guess Ultimate</title>
-<meta name="description" content="Cyber Guess هي لعبة تخمين أرقام بأسلوب سايبر/نيون سريعة الإيقاع، تعتمد على الذكاء والحدس. تختار مستوى الصعوبة (سهل، متوسط، صعب) وكل مستوى يغيّر نطاق الأرقام تلقائيًا، وعندك 10 محاولات فقط عشان توصل للرقم الصحيح.
+    <link rel="icon" type="image/png" sizes="16x16" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="shortcut icon" href="icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Guess Ultimate</title>
+    <meta name="description" content="Cyber Guess هي لعبة تخمين أرقام بأسلوب سايبر/نيون سريعة الإيقاع، تعتمد على الذكاء والحدس. تختار مستوى الصعوبة (سهل، متوسط، صعب) وكل مستوى يغيّر نطاق الأرقام تلقائيًا، وعندك 10 محاولات فقط عشان توصل للرقم الصحيح.
 
 اللعبة فيها نظام نقاط (Score) يزيد حسب أدائك وعدد المحاولات المتبقية، مع نظام خبرة (XP) وترقية مستويات (Level Up) يخليك تحس بتقدم مستمر. كمان يتم حفظ أعلى نتيجة (High Score) على الجهاز عشان تنافس نفسك كل مرة.
 
 كل تخمين يعطيك ملاحظات فورية تساعدك تقرّب من الرقم الصحيح، مع سجل (History) يوضح محاولاتك السابقة. الخلفية متحركة بتأثيرات جسيمات (Particle FX) تعطي طابع سايبربنك، مع واجهة نيون خفيفة تركز على التجربة السريعة.
 
 اللعبة مصممة لتكون سهلة الدخول لكنها صعبة الإتقان، وتدفعك تعيد المحاولة أكثر من مرة لتحسين نتيجتك وكسر رقمك القياسي.">
-<meta name="author" content="Saged Diaa Sallam">
-<meta property="og:title" content="Cyber Guess Game">
-<meta property="og:description" content="لعبة تخمين أرقام بأسلوب سايبربنك ممتعة ومجانية">
-<meta property="og:type" content="website">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#00fff2">
-<meta name="keywords" content="yber Guess, لعبة تخمين أرقام, لعبة ذكاء, ألعاب أونلاين بدون نت, لعبة موبايل خفيفة, لعبة تحدي, لعبة تركيز, لعبة سرعة بديهة, لعبة أرقام من 1 إلى 200, guess number game, number guessing game, brain game, logic game, casual game, addictive game, neon game, cyberpunk game, particle effects game, HTML5 game, browser game, JavaScript game, XP system game, score system game, high score game, single player game, arcade game, puzzle game, mobile friendly game, responsive game">
-<style>
-body{
-margin:0;
-font-family: Arial;
-background:#05060a;
-color:white;
-overflow:hidden;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
-}
+    <meta name="author" content="Saged Diaa Sallam">
+    <meta property="og:title" content="Cyber Guess Game">
+    <meta property="og:description" content="لعبة تخمين أرقام بأسلوب سايبربنك ممتعة ومجانية">
+    <meta property="og:type" content="website">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00fff2">
+    <meta name="keywords"
+        content="yber Guess, لعبة تخمين أرقام, لعبة ذكاء, ألعاب أونلاين بدون نت, لعبة موبايل خفيفة, لعبة تحدي, لعبة تركيز, لعبة سرعة بديهة, لعبة أرقام من 1 إلى 200, guess number game, number guessing game, brain game, logic game, casual game, addictive game, neon game, cyberpunk game, particle effects game, HTML5 game, browser game, JavaScript game, XP system game, score system game, high score game, single player game, arcade game, puzzle game, mobile friendly game, responsive game">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #05060a;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-/* BACKGROUND */
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:0;
-}
+        /* BACKGROUND */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
 
-.container{
-position:relative;
-z-index:2;
-}
+        .container {
+            position: relative;
+            z-index: 2;
+        }
 
-/* GAME BOX */
-.gameBox{
-width:390px;
-padding:20px;
-border-radius:16px;
-background:rgba(0,255,255,0.05);
-border:1px solid rgba(0,255,255,0.2);
-box-shadow:0 0 25px rgba(0,255,255,0.2);
-backdrop-filter: blur(10px);
-text-align:center;
-}
+        /* GAME BOX */
+        .gameBox {
+            width: 390px;
+            padding: 20px;
+            border-radius: 16px;
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
 
-h1{
-color:#00fff2;
-text-shadow:0 0 10px #00fff2;
-}
+        h1 {
+            color: #00fff2;
+            text-shadow: 0 0 10px #00fff2;
+        }
 
-/* INPUTS */
-select,input{
-width:100%;
-padding:10px;
-margin:6px 0;
-background:#0b0f1a;
-border:none;
-color:white;
-border-radius:8px;
-}
+        /* INPUTS */
+        select,
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0;
+            background: #0b0f1a;
+            border: none;
+            color: white;
+            border-radius: 8px;
+        }
 
-button{
-width:100%;
-padding:10px;
-background:#00fff2;
-border:none;
-font-weight:bold;
-cursor:pointer;
-}
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #00fff2;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-/* META */
-.meta{
-display:flex;
-justify-content:space-between;
-font-size:13px;
-margin-top:10px;
-color:#aefcff;
-}
+        /* META */
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-top: 10px;
+            color: #aefcff;
+        }
 
-/* HISTORY */
-#history{
-margin-top:10px;
-text-align:left;
-font-size:12px;
-max-height:120px;
-overflow:auto;
-padding:8px;
-background:rgba(0,255,255,0.05);
-border-radius:8px;
-}
+        /* HISTORY */
+        #history {
+            margin-top: 10px;
+            text-align: left;
+            font-size: 12px;
+            max-height: 120px;
+            overflow: auto;
+            padding: 8px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 8px;
+        }
 
-/* XP BAR */
-.xpBar{
-width:100%;
-height:8px;
-background:#111;
-border-radius:10px;
-overflow:hidden;
-margin-top:10px;
-}
+        /* XP BAR */
+        .xpBar {
+            width: 100%;
+            height: 8px;
+            background: #111;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
 
-.xpFill{
-height:100%;
-width:0%;
-background:linear-gradient(90deg,#00fff2,#00ff7b);
-transition:0.3s;
-}
+        .xpFill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00fff2, #00ff7b);
+            transition: 0.3s;
+        }
 
-/* OVERLAY */
-.overlay{
-position:absolute;
-inset:0;
-display:none;
-justify-content:center;
-align-items:center;
-font-size:28px;
-background:rgba(0,0,0,0.6);
-border-radius:16px;
-}
+        /* OVERLAY */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 16px;
+        }
 
-/* SHAKE */
-.shake{animation:shake 0.3s}
-@keyframes shake{
-0%{transform:translateX(0)}
-25%{transform:translateX(-6px)}
-50%{transform:translateX(6px)}
-100%{transform:translateX(0)}
-}
+        /* SHAKE */
+        .shake {
+            animation: shake 0.3s
+        }
 
-#ad-container{
-margin-top:15px;
-text-align:center;
-    position: relative;
-    z-index: 9999;
-    margin-top: 15px;
-    text-align: center;
-}
+        @keyframes shake {
+            0% {
+                transform: translateX(0)
+            }
 
-@media (max-width: 500px){
-.gameBox{width:92%}
-}
-</style>
+            25% {
+                transform: translateX(-6px)
+            }
+
+            50% {
+                transform: translateX(6px)
+            }
+
+            100% {
+                transform: translateX(0)
+            }
+        }
+
+        #ad-container {
+            margin-top: 15px;
+            text-align: center;
+            position: relative;
+            z-index: 9999;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            .gameBox {
+                width: 92%
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<canvas id="bg"></canvas>
+    <canvas id="bg"></canvas>
 
-<div class="container">
+    <div class="container">
 
-<div class="gameBox" id="box">
+        <div class="gameBox" id="box">
 
-<h1>CYBER GUESS</h1>
+            <h1>CYBER GUESS</h1>
 
-<select id="level">
-<option value="easy">EASY (1-50)</option>
-<option value="medium">MEDIUM (1-100)</option>
-<option value="hard">HARD (1-200)</option>
-</select>
+            <select id="level">
+                <option value="easy">EASY (1-50)</option>
+                <option value="medium">MEDIUM (1-100)</option>
+                <option value="hard">HARD (1-200)</option>
+            </select>
 
-<input type="number" id="guess" placeholder="ENTER NUMBER">
-<button onclick="checkGuess()">HACK</button>
+            <input type="number" id="guess" placeholder="ENTER NUMBER">
+            <button onclick="checkGuess()">HACK</button>
 
-<div class="meta">
-<div>TRIES: <span id="left">10</span></div>
-<div>SCORE: <span id="score">0</span></div>
-</div>
+            <div class="meta">
+                <div>TRIES: <span id="left">10</span></div>
+                <div>SCORE: <span id="score">0</span></div>
+            </div>
 
-<div class="meta">
-<div>LEVEL: <span id="lvl">1</span></div>
-<div>XP: <span id="xp">0</span></div>
-</div>
+            <div class="meta">
+                <div>LEVEL: <span id="lvl">1</span></div>
+                <div>XP: <span id="xp">0</span></div>
+            </div>
 
-<div class="meta">
-<div>HIGH SCORE: <span id="high">0</span></div>
-</div>
+            <div class="meta">
+                <div>HIGH SCORE: <span id="high">0</span></div>
+            </div>
 
-<div class="xpBar"><div class="xpFill" id="xpFill"></div></div>
+            <div class="xpBar">
+                <div class="xpFill" id="xpFill"></div>
+            </div>
 
-<div id="history"></div>
+            <div id="history"></div>
 
-<div class="overlay" id="overlay"></div>
-
-
+            <div class="overlay" id="overlay"></div>
 
 
-</div>
 
-</div>
 
-<div class="ad-container">
+        </div>
+           <div class="ad-container">
+        <script>
+            atOptions = {
+                'key': '389d78db7f9cbf6dd8351bf78f504954',
+                'format': 'iframe',
+                'height': 50,
+                'width': 320,
+                'params': {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/389d78db7f9cbf6dd8351bf78f504954/invoke.js"></script>
+    </div>
+    </div>
+
+ 
+
+
+
     <script>
-  atOptions = {
-    'key' : '389d78db7f9cbf6dd8351bf78f504954',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/389d78db7f9cbf6dd8351bf78f504954/invoke.js"></script>
-</div>
+        /* ===== PARTICLES ===== */
+        const c = document.getElementById("bg");
+        const ctx = c.getContext("2d");
+
+        c.width = innerWidth;
+        c.height = innerHeight;
 
 
 
-<script>
-/* ===== PARTICLES ===== */
-const c = document.getElementById("bg");
-const ctx = c.getContext("2d");
+        window.addEventListener("resize", () => {
+            c.width = innerWidth;
+            c.height = innerHeight;
+        });
 
-c.width = innerWidth;
-c.height = innerHeight;
+        let particles = [];
 
+        for (let i = 0; i < 70; i++) {
+            particles.push({
+                x: Math.random() * c.width,
+                y: Math.random() * c.height,
+                r: 2,
+                dx: (Math.random() - 0.5),
+                dy: (Math.random() - 0.5)
+            });
+        }
 
+        function draw() {
+            ctx.fillStyle = "rgba(0,0,0,0.25)";
+            ctx.fillRect(0, 0, c.width, c.height);
 
-window.addEventListener("resize", () => {
-    c.width = innerWidth;
-    c.height = innerHeight;
-});
+            ctx.fillStyle = "#00fff2";
 
-let particles = [];
+            particles.forEach(p => {
+                p.x += p.dx;
+                p.y += p.dy;
 
-for (let i = 0; i < 70; i++) {
-particles.push({
-x: Math.random() * c.width,
-y: Math.random() * c.height,
-r: 2,
-dx: (Math.random() - 0.5),
-dy: (Math.random() - 0.5)
-});
-}
+                if (p.x < 0 || p.x > c.width) p.dx *= -1;
+                if (p.y < 0 || p.y > c.height) p.dy *= -1;
 
-function draw(){
-ctx.fillStyle="rgba(0,0,0,0.25)";
-ctx.fillRect(0,0,c.width,c.height);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
 
-ctx.fillStyle="#00fff2";
+            requestAnimationFrame(draw);
+        }
+        draw();
 
-particles.forEach(p=>{
-p.x += p.dx;
-p.y += p.dy;
+        /* ===== GAME ===== */
+        let secret;
+        let attempts = 10;
+        let score = 0;
+        let xp = 0;
+        let level = 1;
+        let max = 50;
+        let history = [];
 
-if(p.x<0||p.x>c.width)p.dx*=-1;
-if(p.y<0||p.y>c.height)p.dy*=-1;
+        let high = Number(localStorage.getItem("high")) || 0;
+        document.getElementById("high").textContent = high;
 
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-ctx.fill();
-});
+        let overlay = document.getElementById("overlay");
 
-requestAnimationFrame(draw);
-}
-draw();
+        let today = new Date().toDateString();
+        if (localStorage.getItem("daily") !== today) {
+            localStorage.setItem("daily", today);
+            xp += 30;
+            score += 50;
+        }
 
-/* ===== GAME ===== */
-let secret;
-let attempts = 10;
-let score = 0;
-let xp = 0;
-let level = 1;
-let max = 50;
-let history = [];
+        function setLevel() {
+            let l = document.getElementById("level").value;
 
-let high = Number(localStorage.getItem("high")) || 0;
-document.getElementById("high").textContent = high;
+            if (l === "easy") max = 50;
+            else if (l === "medium") max = 100;
+            else max = 200;
 
-let overlay = document.getElementById("overlay");
+            secret = Math.floor(Math.random() * max) + 1;
+            attempts = 10;
+            history = [];
 
-let today = new Date().toDateString();
-if(localStorage.getItem("daily") !== today){
-localStorage.setItem("daily", today);
-xp += 30;
-score += 50;
-}
+            document.getElementById("left").textContent = attempts;
+            document.getElementById("history").innerHTML = "";
+            document.getElementById("guess").value = "";
+        }
 
-function setLevel(){
-let l = document.getElementById("level").value;
+        function updateUI() {
+            document.getElementById("score").textContent = score;
+            document.getElementById("xp").textContent = xp;
+            document.getElementById("lvl").textContent = level;
 
-if(l==="easy") max=50;
-else if(l==="medium") max=100;
-else max=200;
+            document.getElementById("xpFill").style.width = (xp / 100) * 100 + "%";
+        }
 
-secret = Math.floor(Math.random()*max)+1;
-attempts = 10;
-history = [];
+        function show(t) {
+            overlay.style.display = "flex";
+            overlay.textContent = t;
+        }
 
-document.getElementById("left").textContent = attempts;
-document.getElementById("history").innerHTML = "";
-document.getElementById("guess").value = "";
-}
+        function hide() {
+            overlay.style.display = "none";
+        }
 
-function updateUI(){
-document.getElementById("score").textContent = score;
-document.getElementById("xp").textContent = xp;
-document.getElementById("lvl").textContent = level;
+        function checkGuess() {
 
-document.getElementById("xpFill").style.width = (xp/100)*100 + "%";
-}
+            let v = Number(document.getElementById("guess").value);
+            let box = document.getElementById("box");
 
-function show(t){
-overlay.style.display="flex";
-overlay.textContent=t;
-}
+            if (isNaN(v) || v < 1 || v > max) {
+                box.classList.add("shake");
+                setTimeout(() => box.classList.remove("shake"), 300);
+                alert("ادخل رقم بين 1 و " + max);
+                return;
+            }
 
-function hide(){
-overlay.style.display="none";
-}
+            attempts--;
+            document.getElementById("left").textContent = attempts;
 
-function checkGuess(){
+            let msg = "";
 
-let v = Number(document.getElementById("guess").value);
-let box = document.getElementById("box");
+            if (v < secret) msg = "↑ أعلى من " + v;
+            else if (v > secret) msg = "↓ أقل من " + v;
+            else msg = "✔ صح";
 
-if(isNaN(v) || v<1 || v>max){
-box.classList.add("shake");
-setTimeout(()=>box.classList.remove("shake"),300);
-alert("ادخل رقم بين 1 و "+max);
-return;
-}
+            history.push(v + " → " + msg);
 
-attempts--;
-document.getElementById("left").textContent = attempts;
+            document.getElementById("history").innerHTML =
+                history.map(h => `<div>${h}</div>`).join("");
 
-let msg = "";
+            if (v === secret) {
 
-if(v < secret) msg = "↑ أعلى من "+v;
-else if(v > secret) msg = "↓ أقل من "+v;
-else msg = "✔ صح";
+                score += attempts * 10;
+                xp += 20;
 
-history.push(v+" → "+msg);
+                if (xp >= 100) {
+                    xp = 0;
+                    level++;
+                }
 
-document.getElementById("history").innerHTML =
-history.map(h=>`<div>${h}</div>`).join("");
+                if (score > high) {
+                    high = score;
+                    localStorage.setItem("high", high);
+                }
 
-if(v === secret){
+                document.getElementById("high").textContent = high;
+                updateUI();
 
-score += attempts*10;
-xp += 20;
+                show("WIN 🎉");
 
-if(xp >= 100){
-xp = 0;
-level++;
-}
+                setTimeout(() => {
+                    hide();
+                    setLevel();
+                }, 2000);
 
-if(score > high){
-high = score;
-localStorage.setItem("high", high);
-}
+                return;
+            }
 
-document.getElementById("high").textContent = high;
-updateUI();
+            if (attempts === 0) {
+                show("LOSE 💀");
 
-show("WIN 🎉");
+                setTimeout(() => {
+                    hide();
+                    setLevel();
+                }, 2000);
+            }
 
-setTimeout(()=>{
-hide();
-setLevel();
-},2000);
+            document.getElementById("guess").value = "";
+            document.getElementById("guess").focus();
 
-return;
-}
+            updateUI();
+        }
 
-if(attempts === 0){
-show("LOSE 💀");
+        document.getElementById("level").addEventListener("change", setLevel);
 
-setTimeout(()=>{
-hide();
-setLevel();
-},2000);
-}
+        document.getElementById("guess").addEventListener("keydown", e => {
+            if (e.key === "Enter") checkGuess();
+        });
 
-document.getElementById("guess").value = "";
-document.getElementById("guess").focus();
-
-updateUI();
-}
-
-document.getElementById("level").addEventListener("change", setLevel);
-
-document.getElementById("guess").addEventListener("keydown", e=>{
-if(e.key==="Enter") checkGuess();
-});
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js")
-    .then(() => console.log("SW Registered"))
-    .catch(err => console.log(err));
-}
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("./sw.js")
+                .then(() => console.log("SW Registered"))
+                .catch(err => console.log(err));
+        }
 
 
-setLevel();
-updateUI();
-</script>
+        setLevel();
+        updateUI();
+    </script>
 
 </body>
+
 </html>
