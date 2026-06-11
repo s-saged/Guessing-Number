@@ -1,3 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guess Game Pro</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial;
+    background: radial-gradient(circle at top,#141a33,#070a14);
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+/* GAME BOX */
+.gameBox{
+    width:360px;
+    padding:20px;
+    background: rgba(255,255,255,0.05);
+    border-radius:16px;
+    box-shadow:0 0 25px rgba(0,0,0,0.6);
+    backdrop-filter: blur(12px);
+    text-align:center;
+    position:relative;
+}
+
+h1{margin-bottom:10px}
+
+select, input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border:none;
+    border-radius:8px;
+    outline:none;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    background:#6c5ce7;
+    border:none;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#a29bfe;
+}
+
+/* INFO ROW */
+.meta{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    margin-top:10px;
+}
+
+/* SHAKE EFFECT */
+.shake{
+    animation:shake 0.25s;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    50%{transform:translateX(6px)}
+    100%{transform:translateX(0)}
+}
+
+/* OVERLAY */
+.overlay{
+    position:absolute;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    font-size:22px;
+    border-radius:16px;
+}
+
+.win{background:rgba(0,255,120,0.15)}
+.lose{background:rgba(255,0,80,0.15)}
+
+.pop{animation:pop 0.4s}
+
+@keyframes pop{
+    from{transform:scale(0.6);opacity:0}
+    to{transform:scale(1);opacity:1}
+}
+
+/* ADS AREA */
+#ad-container{
+    margin-top:20px;
+    width:360px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+</style>
+
+</head>
+<body>
+
 <div class="gameBox">
 
     <h1>Guess Game</h1>
@@ -27,11 +140,13 @@
 
 </div>
 
-<!-- 🔥 ADS AREA (حطه هنا تحت اللعبة مباشرة) -->
-<div id="ad-container" style="margin-top:15px; text-align:center; width:100%;">
-    <script async="async" data-cfasync="false" src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js"></script>
+<!-- ADS AREA (حط كود Adsterra هنا) -->
+<div id="ad-container">
+    <!-- ADS HERE -->
+     <script async="async" data-cfasync="false" src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js"></script>
 <div id="container-033a44687247c8e8df2d89f7c68bd9db"></div>
-<script>
+
+     <script>
   atOptions = {
     'key' : '389d78db7f9cbf6dd8351bf78f504954',
     'format' : 'iframe',
@@ -43,3 +158,115 @@
 <script src="https://www.highperformanceformat.com/389d78db7f9cbf6dd8351bf78f504954/invoke.js"></script>
 
 </div>
+
+<script>
+
+let secret, max = 100;
+let attempts = 10;
+let score = 0;
+let high = localStorage.getItem("highScore") || 0;
+
+document.getElementById("high").innerText = high;
+
+function startGame(){
+    let level = document.getElementById("level").value;
+
+    if(level==="easy") max = 50;
+    else if(level==="medium") max = 100;
+    else max = 200;
+
+    secret = Math.floor(Math.random()*max)+1;
+    attempts = 10;
+
+    document.getElementById("left").innerText = attempts;
+    document.getElementById("msg").innerText = "";
+}
+
+function playSound(type){
+    let ctx = new (window.AudioContext || window.webkitAudioContext)();
+    let o = ctx.createOscillator();
+    let g = ctx.createGain();
+
+    o.connect(g);
+    g.connect(ctx.destination);
+
+    if(type==="win") o.frequency.value = 700;
+    else if(type==="lose") o.frequency.value = 120;
+    else o.frequency.value = 300;
+
+    g.gain.setValueAtTime(0.2, ctx.currentTime);
+    o.start();
+    setTimeout(()=>o.stop(),150);
+}
+
+function checkGuess(){
+    let input = document.getElementById("guess");
+    let value = Number(input.value);
+
+    if(!value || value<1 || value>max){
+        shake();
+        playSound("error");
+        return;
+    }
+
+    attempts--;
+    document.getElementById("left").innerText = attempts;
+
+    if(value === secret){
+        score += attempts * 10;
+        document.getElementById("score").innerText = score;
+        endGame(true);
+    }
+    else if(attempts === 0){
+        endGame(false);
+    }
+    else{
+        document.getElementById("msg").innerText =
+        value > secret ? "Too high" : "Too low";
+        shake();
+        playSound("error");
+    }
+
+    input.value="";
+}
+
+function shake(){
+    let box = document.querySelector(".gameBox");
+    box.classList.add("shake");
+    setTimeout(()=>box.classList.remove("shake"),250);
+}
+
+function endGame(win){
+    let overlay = document.getElementById("overlay");
+    overlay.style.display="flex";
+
+    if(win){
+        playSound("win");
+        overlay.className="overlay win pop";
+        overlay.innerHTML = "You Win 🎉";
+    }else{
+        playSound("lose");
+        overlay.className="overlay lose pop";
+        overlay.innerHTML = "You Lose 💀<br>Number was " + secret;
+    }
+
+    if(score > high){
+        high = score;
+        localStorage.setItem("highScore", high);
+        document.getElementById("high").innerText = high;
+    }
+
+    setTimeout(()=>{
+        overlay.style.display="none";
+        startGame();
+    },2500);
+}
+
+document.getElementById("level").addEventListener("change", startGame);
+
+startGame();
+
+</script>
+
+</body>
+</html>
