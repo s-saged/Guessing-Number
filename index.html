@@ -133,6 +133,37 @@ button{
     text-align:center;
   
 }
+
+
+
+@media (max-width: 500px){
+    .gameBox{
+        width: 92%;
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    h1{
+        font-size: 20px;
+    }
+
+    .meta{
+        font-size: 12px;
+    }
+
+    #history{
+        max-height: 100px;
+        font-size: 11px;
+    }
+
+    button{
+        padding: 12px;
+    }
+
+    input, select{
+        font-size: 14px;
+    }
+}
 </style>
 </head>
 
@@ -210,8 +241,14 @@ button{
 const c=document.getElementById("bg");
 const ctx=c.getContext("2d");
 
-c.width=innerWidth;
-c.height=innerHeight;
+/* 🔥 FIX: RESPONSIVE CANVAS RESIZE */
+function resizeCanvas(){
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+/* =============================== */
 
 let particles=[];
 
@@ -239,13 +276,14 @@ function draw(){
         if(p.y<0||p.y>c.height)p.dy*=-1;
 
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.arc(p.x,p.y,r,0,Math.PI*2);
         ctx.fill();
     });
 
     requestAnimationFrame(draw);
 }
 draw();
+
 
 /* ===== GAME STATE ===== */
 let secret;
@@ -256,9 +294,11 @@ let level=1;
 let max=50;
 let history=[];
 
+
 /* HIGH SCORE */
 let high=localStorage.getItem("high")||0;
 document.getElementById("high").textContent=high;
+
 
 /* DAILY REWARD */
 let today=new Date().toDateString();
@@ -267,6 +307,7 @@ if(localStorage.getItem("daily")!==today){
     xp+=30;
     score+=50;
 }
+
 
 /* ===== SET LEVEL ===== */
 function setLevel(){
@@ -284,9 +325,9 @@ function setLevel(){
 
     document.getElementById("left").textContent=attempts;
     document.getElementById("history").innerHTML="";
-
     document.getElementById("guess").value="";
 }
+
 
 /* ===== UPDATE UI ===== */
 function updateUI(){
@@ -296,6 +337,7 @@ function updateUI(){
 
     document.getElementById("xpFill").style.width=(xp/100)*100+"%";
 }
+
 
 /* ===== CHECK ===== */
 function checkGuess(){
@@ -330,20 +372,17 @@ function checkGuess(){
         score+=attempts*10;
         xp+=20;
 
-        /* LEVEL UP */
         if(xp>=100){
             xp=0;
             level++;
         }
 
-        /* HIGH SCORE */
         if(score>high){
             high=score;
             localStorage.setItem("high",high);
         }
 
         updateUI();
-
         document.getElementById("high").textContent=high;
 
         show("WIN 🎉");
@@ -366,12 +405,12 @@ function checkGuess(){
         },2000);
     }
 
-
     document.getElementById("guess").value = "";
-document.getElementById("guess").focus();
+    document.getElementById("guess").focus();
 
     updateUI();
 }
+
 
 /* ===== OVERLAY ===== */
 function show(t){
@@ -382,14 +421,19 @@ function show(t){
 function hide(){
     overlay.style.display="none";
 }
+
+
+/* ENTER KEY */
 document.getElementById("guess").addEventListener("keydown", function(e){
     if(e.key === "Enter"){
         checkGuess();
     }
 });
 
+
 /* EVENTS */
 document.getElementById("level").addEventListener("change",setLevel);
+
 
 /* INIT */
 setLevel();
