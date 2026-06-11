@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber Guess RPG Ultimate</title>
+<title>Cyber Guess Ultimate</title>
 
 <style>
 body{
@@ -18,7 +18,7 @@ body{
     min-height:100vh;
 }
 
-/* PARTICLES */
+/* BACKGROUND */
 canvas{
     position:fixed;
     top:0;
@@ -31,7 +31,7 @@ canvas{
     z-index:2;
 }
 
-/* CARD */
+/* GAME BOX */
 .gameBox{
     width:390px;
     padding:20px;
@@ -39,8 +39,8 @@ canvas{
     background:rgba(0,255,255,0.05);
     border:1px solid rgba(0,255,255,0.2);
     box-shadow:0 0 25px rgba(0,255,255,0.2);
-    text-align:center;
     backdrop-filter: blur(10px);
+    text-align:center;
 }
 
 h1{
@@ -48,6 +48,7 @@ h1{
     text-shadow:0 0 10px #00fff2;
 }
 
+/* INPUTS */
 select,input{
     width:100%;
     padding:10px;
@@ -65,7 +66,6 @@ button{
     border:none;
     font-weight:bold;
     cursor:pointer;
-    box-shadow:0 0 15px #00fff2;
 }
 
 /* META */
@@ -118,27 +118,13 @@ button{
     border-radius:16px;
 }
 
-/* ANIMATION */
+/* SHAKE */
 .shake{animation:shake 0.3s}
 @keyframes shake{
     0%{transform:translateX(0)}
     25%{transform:translateX(-6px)}
     50%{transform:translateX(6px)}
     100%{transform:translateX(0)}
-}
-
-.winGlow{animation:win 0.7s}
-@keyframes win{
-    0%{box-shadow:0 0 0 cyan}
-    50%{box-shadow:0 0 40px cyan}
-    100%{box-shadow:0 0 0 cyan}
-}
-
-.loseGlow{animation:lose 0.5s}
-@keyframes lose{
-    0%{transform:scale(1)}
-    50%{transform:scale(0.95)}
-    100%{transform:scale(1)}
 }
 
 /* ADS */
@@ -178,6 +164,10 @@ button{
     <div>XP: <span id="xp">0</span></div>
 </div>
 
+<div class="meta">
+    <div>HIGH SCORE: <span id="high">0</span></div>
+</div>
+
 <div class="xpBar"><div class="xpFill" id="xpFill"></div></div>
 
 <div id="history"></div>
@@ -188,26 +178,7 @@ button{
 
 <!-- ADS -->
 <div id="ad-container">
-    <!-- ADS HERE -->
-<div id="ad-container">
-
-   <script async="async" data-cfasync="false" src="https://pl29701493.effectivecpmnetwork.com/033a44687247c8e8df2d89f7c68bd9db/invoke.js" style="width: 20px; height: 20px;"></script>
-<div id="container-033a44687247c8e8df2d89f7c68bd9db"></div>
-
-
-<script>
-  atOptions = {
-    'key' : '389d78db7f9cbf6dd8351bf78f504954',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/389d78db7f9cbf6dd8351bf78f504954/invoke.js"></script>
-
-
-</div>
+<!-- your ads here -->
 </div>
 
 </div>
@@ -217,12 +188,20 @@ button{
 /* ===== PARTICLES ===== */
 const c=document.getElementById("bg");
 const ctx=c.getContext("2d");
+
 c.width=innerWidth;
 c.height=innerHeight;
 
-let p=[];
-for(let i=0;i<80;i++){
-    p.push({x:Math.random()*c.width,y:Math.random()*c.height,r:2,dx:(Math.random()-0.5),dy:(Math.random()-0.5)});
+let particles=[];
+
+for(let i=0;i<70;i++){
+    particles.push({
+        x:Math.random()*c.width,
+        y:Math.random()*c.height,
+        r:2,
+        dx:(Math.random()-0.5),
+        dy:(Math.random()-0.5)
+    });
 }
 
 function draw(){
@@ -230,13 +209,16 @@ function draw(){
     ctx.fillRect(0,0,c.width,c.height);
 
     ctx.fillStyle="#00fff2";
-    p.forEach(e=>{
-        e.x+=e.dx;
-        e.y+=e.dy;
-        if(e.x<0||e.x>c.width)e.dx*=-1;
-        if(e.y<0||e.y>c.height)e.dy*=-1;
+
+    particles.forEach(p=>{
+        p.x+=p.dx;
+        p.y+=p.dy;
+
+        if(p.x<0||p.x>c.width)p.dx*=-1;
+        if(p.y<0||p.y>c.height)p.dy*=-1;
+
         ctx.beginPath();
-        ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
         ctx.fill();
     });
 
@@ -244,117 +226,133 @@ function draw(){
 }
 draw();
 
-/* ===== SOUND ===== */
-function sound(t){
-    let a=new AudioContext();
-    let o=a.createOscillator();
-    let g=a.createGain();
+/* ===== GAME STATE ===== */
+let secret;
+let attempts=10;
+let score=0;
+let xp=0;
+let level=1;
+let max=50;
+let history=[];
 
-    o.connect(g);g.connect(a.destination);
-
-    o.frequency.value = t==="win"?900:t==="lose"?120:300;
-
-    g.gain.value=0.2;
-    o.start();
-    setTimeout(()=>o.stop(),120);
-}
-
-/* ===== GAME ===== */
-let secret,attempts=10,score=0,max=100;
-let xp=0,level=1,history=[];
-
+/* HIGH SCORE */
 let high=localStorage.getItem("high")||0;
+document.getElementById("high").textContent=high;
 
-/* DAILY */
+/* DAILY REWARD */
 let today=new Date().toDateString();
-if(localStorage.getItem("day")!==today){
-    localStorage.setItem("day",today);
+if(localStorage.getItem("daily")!==today){
+    localStorage.setItem("daily",today);
     xp+=30;
     score+=50;
 }
 
-function start(){
+/* ===== SET LEVEL ===== */
+function setLevel(){
 
-    let l=level.value;
+    let l=document.getElementById("level").value;
 
-    max=l==="easy"?50:l==="medium"?100:200;
+    if(l==="easy") max=50;
+    else if(l==="medium") max=100;
+    else max=200;
 
     secret=Math.floor(Math.random()*max)+1;
+
     attempts=10;
     history=[];
-    left.textContent=attempts;
-    historyBox();
+
+    document.getElementById("left").textContent=attempts;
+    document.getElementById("history").innerHTML="";
+
+    document.getElementById("guess").value="";
 }
 
+/* ===== UPDATE UI ===== */
+function updateUI(){
+    document.getElementById("score").textContent=score;
+    document.getElementById("xp").textContent=xp;
+    document.getElementById("lvl").textContent=level;
+
+    document.getElementById("xpFill").style.width=(xp/100)*100+"%";
+}
+
+/* ===== CHECK ===== */
 function checkGuess(){
 
-    let v=+guess.value;
+    let v=Number(document.getElementById("guess").value);
     let box=document.getElementById("box");
 
-    if(!v||v<1||v>max){
+    if(!v || v<1 || v>max){
         box.classList.add("shake");
         setTimeout(()=>box.classList.remove("shake"),300);
+        alert("دخل رقم بين 1 و "+max);
         return;
     }
 
     attempts--;
-    left.textContent=attempts;
+    document.getElementById("left").textContent=attempts;
 
-    let msg=v<secret?`↑ أعلى من ${v}`:v>secret?`↓ أقل من ${v}`:"✔ صح";
+    let msg="";
+
+    if(v<secret) msg="↑ أعلى من "+v;
+    else if(v>secret) msg="↓ أقل من "+v;
+    else msg="✔ صح";
 
     history.push(v+" → "+msg);
-    historyBox();
 
-    sound("click");
+    document.getElementById("history").innerHTML=
+        history.map(h=>`<div>${h}</div>`).join("");
 
+    /* WIN */
     if(v===secret){
 
         score+=attempts*10;
         xp+=20;
 
+        /* LEVEL UP */
         if(xp>=100){
             xp=0;
-            levelNum();
+            level++;
         }
 
+        /* HIGH SCORE */
         if(score>high){
             high=score;
             localStorage.setItem("high",high);
         }
 
-        sound("win");
-        box.classList.add("winGlow");
+        updateUI();
+
+        document.getElementById("high").textContent=high;
+
         show("WIN 🎉");
 
-        setTimeout(()=>{hide();start();},2000);
+        setTimeout(()=>{
+            hide();
+            setLevel();
+        },2000);
+
         return;
     }
 
+    /* LOSE */
     if(attempts===0){
-        sound("lose");
-        box.classList.add("loseGlow");
         show("LOSE 💀");
-        setTimeout(()=>{hide();start();},2000);
+
+        setTimeout(()=>{
+            hide();
+            setLevel();
+        },2000);
     }
+
+
+    document.getElementById("guess").value = "";
+document.getElementById("guess").focus();
 
     updateUI();
 }
 
-function levelNum(){
-    level.textContent=++level;
-}
-
-function updateUI(){
-    scoreEl.textContent=score;
-    xpEl.textContent=xp;
-    lvl.textContent=level;
-    xpFill.style.width=xp+"%";
-}
-
-function historyBox(){
-    historyEl.innerHTML=history.map(h=>`<div>${h}</div>`).join("");
-}
-
+/* ===== OVERLAY ===== */
 function show(t){
     overlay.style.display="flex";
     overlay.textContent=t;
@@ -363,8 +361,18 @@ function show(t){
 function hide(){
     overlay.style.display="none";
 }
+document.getElementById("guess").addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+        checkGuess();
+    }
+});
 
-start();
+/* EVENTS */
+document.getElementById("level").addEventListener("change",setLevel);
+
+/* INIT */
+setLevel();
+updateUI();
 
 </script>
 
