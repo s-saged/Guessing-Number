@@ -1,3 +1,12 @@
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    for (let reg of regs) {
+      reg.unregister();
+    }
+  });
+}
+
 let secret;
 let attempts = 10;
 let score = 0;
