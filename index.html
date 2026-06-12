@@ -25,162 +25,237 @@
     <meta name="keywords"
         content="yber Guess, لعبة تخمين أرقام, لعبة ذكاء, ألعاب أونلاين بدون نت, لعبة موبايل خفيفة, لعبة تحدي, لعبة تركيز, لعبة سرعة بديهة, لعبة أرقام من 1 إلى 200, guess number game, number guessing game, brain game, logic game, casual game, addictive game, neon game, cyberpunk game, particle effects game, HTML5 game, browser game, JavaScript game, XP system game, score system game, high score game, single player game, arcade game, puzzle game, mobile friendly game, responsive game">
     <style>
-        body {
-            margin: 0;
-            font-family: Arial;
-            background: #05060a;
-            color: white;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+    
 
-        /* BACKGROUND */
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 0;
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
 
-        .container {
-            position: relative;
-            z-index: 2;
-        }
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+background:
+radial-gradient(circle at top left,#7c3aed 0%,transparent 30%),
+radial-gradient(circle at bottom right,#2563eb 0%,transparent 30%),
+linear-gradient(135deg,#0f172a,#020617);
+color:white;
+overflow-x:hidden;
+}
 
-        /* GAME BOX */
-        .gameBox {
-            width: 390px;
-            padding: 20px;
-            border-radius: 16px;
-            background: rgba(0, 255, 255, 0.05);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            text-align: center;
-        }
+.container{
+width:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+}
 
-        h1 {
-            color: #00fff2;
-            text-shadow: 0 0 10px #00fff2;
-        }
+.gameBox{
+width:420px;
+max-width:100%;
+padding:25px;
+border-radius:28px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,0.15);
+box-shadow:
+0 20px 60px rgba(0,0,0,.4),
+0 0 30px rgba(124,58,237,.25);
+position:relative;
+overflow:hidden;
+}
 
-        /* INPUTS */
-        select,
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 6px 0;
-            background: #0b0f1a;
-            border: none;
-            color: white;
-            border-radius: 8px;
-        }
+.gameBox::before{
+content:"";
+position:absolute;
+top:-100px;
+right:-100px;
+width:220px;
+height:220px;
+background:rgba(124,58,237,.25);
+border-radius:50%;
+filter:blur(60px);
+}
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #00fff2;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.gameBox::after{
+content:"";
+position:absolute;
+bottom:-100px;
+left:-100px;
+width:220px;
+height:220px;
+background:rgba(37,99,235,.25);
+border-radius:50%;
+filter:blur(60px);
+}
 
-        /* META */
-        .meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin-top: 10px;
-            color: #aefcff;
-        }
+h1{
+text-align:center;
+margin-bottom:18px;
+font-size:32px;
+font-weight:800;
+letter-spacing:2px;
+background:linear-gradient(90deg,#60a5fa,#a78bfa);
+-webkit-text-fill-color:transparent;
+}
 
-        /* HISTORY */
-        #history {
-            margin-top: 10px;
-            text-align: left;
-            font-size: 12px;
-            max-height: 120px;
-            overflow: auto;
-            padding: 8px;
-            background: rgba(0, 255, 255, 0.05);
-            border-radius: 8px;
-        }
+select,
+input{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:14px;
+background:rgba(255,255,255,.08);
+color:white;
+font-size:15px;
+outline:none;
+}
 
-        /* XP BAR */
-        .xpBar {
-            width: 100%;
-            height: 8px;
-            background: #111;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
+select:focus,
+input:focus{
+box-shadow:0 0 0 2px #60a5fa;
+}
 
-        .xpFill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #00fff2, #00ff7b);
-            transition: 0.3s;
-        }
+button{
+width:100%;
+padding:14px;
+margin-top:12px;
+border:none;
+border-radius:14px;
+font-size:15px;
+font-weight:700;
+cursor:pointer;
+color:white;
+background:linear-gradient(135deg,#2563eb,#7c3aed);
+transition:.25s;
+}
 
-        /* OVERLAY */
-        .overlay {
-            position: absolute;
-            inset: 0;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            font-size: 28px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 16px;
-        }
+button:hover{
+transform:translateY(-2px);
+}
 
-        /* SHAKE */
-        .shake {
-            animation: shake 0.3s
-        }
+.meta{
+display:flex;
+gap:10px;
+margin-top:12px;
+}
 
-        @keyframes shake {
-            0% {
-                transform: translateX(0)
-            }
+.meta div{
+flex:1;
+background:rgba(255,255,255,.06);
+padding:10px;
+border-radius:12px;
+text-align:center;
+font-size:13px;
+}
 
-            25% {
-                transform: translateX(-6px)
-            }
+.xpBar{
+width:100%;
+height:10px;
+background:rgba(255,255,255,.08);
+border-radius:999px;
+overflow:hidden;
+margin-top:15px;
+}
 
-            50% {
-                transform: translateX(6px)
-            }
+.xpFill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#22c55e,#3b82f6);
+transition:.4s;
+}
 
-            100% {
-                transform: translateX(0)
-            }
-        }
+#history{
+margin-top:15px;
+max-height:150px;
+overflow:auto;
+padding:10px;
+border-radius:12px;
+background:rgba(255,255,255,.05);
+}
 
-        #ad-container {
-            margin-top: 15px;
-            text-align: center;
-            position: relative;
-            z-index: 9999;
-            margin-top: 15px;
-            text-align: center;
-        }
+#history div{
+padding:8px;
+margin-bottom:6px;
+border-radius:10px;
+background:rgba(255,255,255,.04);
+font-size:13px;
+}
 
-        @media (max-width: 500px) {
-            .gameBox {
-                width: 92%
-            }
-        }
-    </style>
+.overlay{
+position:absolute;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+font-size:40px;
+font-weight:bold;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(5px);
+z-index:20;
+}
+
+.shake{
+animation:shake .3s;
+}
+
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-6px)}
+100%{transform:translateX(0)}
+}
+
+#ad-container{
+margin-top:15px;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+::-webkit-scrollbar{
+width:6px;
+}
+
+::-webkit-scrollbar-thumb{
+background:#7c3aed;
+border-radius:20px;
+}
+
+@media (max-width:500px){
+
+body{
+padding:12px;
+}
+
+.gameBox{
+padding:18px;
+border-radius:22px;
+}
+
+h1{
+font-size:26px;
+}
+
+.meta{
+flex-direction:column;
+}
+
+}
+
+</style>
+    
 </head>
 
 <body>
 
-    <canvas id="bg"></canvas>
 
     <div class="container">
 
@@ -242,53 +317,7 @@
 
 
     <script>
-        /* ===== PARTICLES ===== */
-        const c = document.getElementById("bg");
-        const ctx = c.getContext("2d");
-
-        c.width = innerWidth;
-        c.height = innerHeight;
-
-
-
-        window.addEventListener("resize", () => {
-            c.width = innerWidth;
-            c.height = innerHeight;
-        });
-
-        let particles = [];
-
-        for (let i = 0; i < 70; i++) {
-            particles.push({
-                x: Math.random() * c.width,
-                y: Math.random() * c.height,
-                r: 2,
-                dx: (Math.random() - 0.5),
-                dy: (Math.random() - 0.5)
-            });
-        }
-
-        function draw() {
-            ctx.fillStyle = "rgba(0,0,0,0.25)";
-            ctx.fillRect(0, 0, c.width, c.height);
-
-            ctx.fillStyle = "#00fff2";
-
-            particles.forEach(p => {
-                p.x += p.dx;
-                p.y += p.dy;
-
-                if (p.x < 0 || p.x > c.width) p.dx *= -1;
-                if (p.y < 0 || p.y > c.height) p.dy *= -1;
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            requestAnimationFrame(draw);
-        }
-        draw();
+    
 
         /* ===== GAME ===== */
         let secret;
