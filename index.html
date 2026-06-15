@@ -62,8 +62,382 @@
 
   </div>
 </div>
+<!--THE SCRIPT-->
+<script>
 
-<script src="script.js"></script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    for (let reg of regs) {
+      reg.unregister();
+    }
+  });
+}
 
+let secret;
+let attempts = 10;
+let score = 0;
+let xp = 0;
+let level = 1;
+let max = 50;
+let history = [];
+
+let high = Number(localStorage.getItem("high")) || 0;
+document.getElementById("high").textContent = high;
+
+let overlay = document.getElementById("overlay");
+
+let today = new Date().toDateString();
+if (localStorage.getItem("daily") !== today) {
+    localStorage.setItem("daily", today);
+    xp += 30;
+    score += 50;
+}
+
+function setLevel() {
+    let l = document.getElementById("level").value;
+
+    if (l === "easy") max = 50;
+    else if (l === "medium") max = 100;
+    else max = 200;
+
+    secret = Math.floor(Math.random() * max) + 1;
+    attempts = 10;
+    history = [];
+
+    document.getElementById("left").textContent = attempts;
+    document.getElementById("history").innerHTML = "";
+    document.getElementById("guess").value = "";
+}
+
+function updateUI() {
+    document.getElementById("score").textContent = score;
+    document.getElementById("xp").textContent = xp;
+    document.getElementById("lvl").textContent = level;
+
+    document.getElementById("xpFill").style.width = (xp / 100) * 100 + "%";
+}
+
+function show(t) {
+    overlay.style.display = "flex";
+    overlay.textContent = t;
+}
+
+function hide() {
+    overlay.style.display = "none";
+}
+
+function checkGuess() {
+
+    let v = Number(document.getElementById("guess").value);
+    let box = document.getElementById("box");
+
+    if (isNaN(v) || v < 1 || v > max) {
+        box.classList.add("shake");
+        setTimeout(() => box.classList.remove("shake"), 300);
+        alert("ادخل رقم بين 1 و " + max);
+        return;
+    }
+
+    attempts--;
+    document.getElementById("left").textContent = attempts;
+
+    let msg = "";
+
+    if (v < secret) msg = "↑ أعلى من " + v;
+    else if (v > secret) msg = "↓ أقل من " + v;
+    else msg = "✔ صح";
+
+    history.push(v + " → " + msg);
+
+    document.getElementById("history").innerHTML =
+        history.map(h => `<div>${h}</div>`).join("");
+
+    if (v === secret) {
+
+        score += attempts * 10;
+        xp += 20;
+
+        if (xp >= 100) {
+            xp = 0;
+            level++;
+        }
+
+        if (score > high) {
+            high = score;
+            localStorage.setItem("high", high);
+        }
+
+        document.getElementById("high").textContent = high;
+        updateUI();
+
+        show("WIN 🎉");
+
+        setTimeout(() => {
+            hide();
+            setLevel();
+        }, 2000);
+
+        return;
+    }
+
+    if (attempts === 0) {
+        show("LOSE 💀");
+
+        setTimeout(() => {
+            hide();
+            setLevel();
+        }, 2000);
+    }
+
+    document.getElementById("guess").value = "";
+    document.getElementById("guess").focus();
+
+    updateUI();
+}
+
+document.getElementById("level").addEventListener("change", setLevel);
+
+document.getElementById("guess").addEventListener("keydown", e => {
+    if (e.key === "Enter") checkGuess();
+});
+
+setLevel();
+updateUI();
+</script>
+<!--THE STYLE-->
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+background:
+radial-gradient(circle at top left,#7c3aed 0%,transparent 35%),
+radial-gradient(circle at bottom right,#2563eb 0%,transparent 35%),
+linear-gradient(135deg,#0f172a,#020617);
+color:white;
+overflow-x:hidden;
+}
+
+/* ===== CONTAINER ===== */
+.container{
+width:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* ===== GAME BOX ===== */
+.gameBox{
+width:420px;
+max-width:100%;
+padding:25px;
+border-radius:28px;
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,0.12);
+box-shadow:
+0 20px 60px rgba(0,0,0,.5),
+0 0 40px rgba(124,58,237,.18);
+position:relative;
+overflow:hidden;
+}
+
+/* glowing orbs */
+.gameBox::before,
+.gameBox::after{
+content:"";
+position:absolute;
+width:240px;
+height:240px;
+border-radius:50%;
+filter:blur(70px);
+opacity:0.7;
+}
+
+.gameBox::before{
+top:-120px;
+right:-120px;
+background:rgba(124,58,237,.35);
+}
+
+.gameBox::after{
+bottom:-120px;
+left:-120px;
+background:rgba(37,99,235,.35);
+}
+
+/* ===== TITLE ===== */
+h1{
+text-align:center;
+margin-bottom:18px;
+font-size:32px;
+font-weight:900;
+letter-spacing:2px;
+
+background:linear-gradient(90deg,#60a5fa,#a78bfa);
+background-clip:text;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+color:transparent;
+}
+
+/* ===== INPUTS ===== */
+select,input{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:14px;
+background:rgba(255,255,255,.07);
+color:white;
+font-size:15px;
+outline:none;
+transition:.2s;
+}
+
+select:focus,input:focus{
+box-shadow:0 0 0 2px #7c3aed;
+background:rgba(255,255,255,.1);
+}
+
+/* ===== BUTTON ===== */
+button{
+width:100%;
+padding:14px;
+margin-top:12px;
+border:none;
+border-radius:14px;
+font-size:15px;
+font-weight:800;
+cursor:pointer;
+color:white;
+background:linear-gradient(135deg,#2563eb,#7c3aed);
+transition:.2s ease;
+}
+
+button:hover{
+transform:translateY(-2px);
+filter:brightness(1.1);
+}
+
+button:active{
+transform:translateY(0px);
+}
+
+/* ===== META BOXES ===== */
+.meta{
+display:flex;
+gap:10px;
+margin-top:12px;
+}
+
+.meta div{
+flex:1;
+background:rgba(255,255,255,.05);
+padding:10px;
+border-radius:12px;
+text-align:center;
+font-size:13px;
+border:1px solid rgba(255,255,255,.08);
+}
+
+/* ===== XP BAR ===== */
+.xpBar{
+width:100%;
+height:10px;
+background:rgba(255,255,255,.08);
+border-radius:999px;
+overflow:hidden;
+margin-top:15px;
+}
+
+.xpFill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#22c55e,#3b82f6);
+transition:width .35s ease;
+}
+
+/* ===== HISTORY ===== */
+#history{
+margin-top:15px;
+max-height:150px;
+overflow:auto;
+padding:10px;
+border-radius:12px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.06);
+}
+
+#history div{
+padding:8px;
+margin-bottom:6px;
+border-radius:10px;
+background:rgba(255,255,255,.03);
+font-size:13px;
+}
+
+/* ===== OVERLAY ===== */
+.overlay{
+position:absolute;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+font-size:40px;
+font-weight:bold;
+background:rgba(0,0,0,.78);
+backdrop-filter:blur(6px);
+z-index:20;
+}
+
+/* ===== SHAKE ===== */
+.shake{
+animation:shake .28s;
+}
+
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-5px)}
+50%{transform:translateX(5px)}
+75%{transform:translateX(-5px)}
+100%{transform:translateX(0)}
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{
+width:6px;
+}
+
+::-webkit-scrollbar-thumb{
+background:#7c3aed;
+border-radius:20px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:500px){
+.gameBox{
+padding:18px;
+border-radius:22px;
+}
+
+h1{
+font-size:26px;
+}
+
+.meta{
+flex-direction:column;
+}
+}
+</style>
 </body>
 </html>
